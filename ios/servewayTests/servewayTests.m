@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface RNBolierplateTests : XCTestCase
+@interface servewayTests : XCTestCase
 
 @end
 
-@implementation RNBolierplateTests
+@implementation servewayTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {
