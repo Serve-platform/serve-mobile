@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import GlobalNav from '~/navigators/GlobalNav';
-
+import './shim';
 const App = () => {
   return (
     <NavigationContainer>

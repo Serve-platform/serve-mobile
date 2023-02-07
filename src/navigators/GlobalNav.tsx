@@ -5,6 +5,7 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import TabNavigator from '~/navigators/TabNav';
+import SignUp from '~/screens/onBoard/SignUp';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ const GlobalNav = () => {
               ? CardStyleInterpolators.forFadeFromBottomAndroid
               : CardStyleInterpolators.forHorizontalIOS,
         }}>
+        <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen
           name="TabNav"
           component={TabNavigator}
