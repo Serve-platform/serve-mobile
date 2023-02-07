@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "./node_modules/.bin/rn-nodeify --hack --yarn --install buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs"
+    "postinstall": "./node_modules/.bin/rn-nodeify --hack --yarn --install buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs && yarn patch-package"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.11",
@@ -28,6 +28,7 @@
     "https-browserify": "~0.0.0",
     "jetifier": "^2.0.0",
     "jetify": "^1.0.2",
+    "patch-package": "^6.5.1",
     "process": "^0.11.10",
     "react": "18.1.0",
     "react-native": "0.70.0",
