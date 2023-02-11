@@ -5,8 +5,21 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import TabNavigator from '~/navigators/TabNav';
+import SignUp from '~/screens/onBoard/SignUp';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const Stack = createStackNavigator();
+type RootStackParamList = {
+  SignUp: undefined;
+  TabNav: undefined;
+};
+
+export type GlobalProps = NativeStackScreenProps<
+  RootStackParamList,
+  'SignUp',
+  'TabNav'
+>;
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 const GlobalNav = () => {
   return (
@@ -18,6 +31,13 @@ const GlobalNav = () => {
               ? CardStyleInterpolators.forFadeFromBottomAndroid
               : CardStyleInterpolators.forHorizontalIOS,
         }}>
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="TabNav"
           component={TabNavigator}
