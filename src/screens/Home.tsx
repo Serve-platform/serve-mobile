@@ -27,12 +27,19 @@ const Home = () => {
   const peripherals = new Map();
   useEffect(() => {
     const permission = async () => {
-      const result = await requestMultiple([
-        PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-        PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-        PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-      ]);
+      let result: any = null;
+
+      if (Platform.OS === 'ios') {
+        result = await request(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
+      }
+      if (Platform.OS === 'android') {
+        result = await requestMultiple([
+          PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+          PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
+        ]);
+      }
 
       if (result['android.permission.BLUETOOTH_CONNECT']) {
         BleManager.start({ showAlert: false }).then(() => {
@@ -133,7 +140,14 @@ const Home = () => {
     });
   };
 
+  // AgEaEQfPIHTg1JOBgltM0wVBFK4lAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
   const handleDiscoverPeripheral = (peripheral: any) => {
+    // 중복 제거
+    if (list.find((dev: any) => dev.data === peripheral.data)) {
+      //@ts-ignore
+      return;
+    }
+
     console.log('Got ble peripheral', peripheral);
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
