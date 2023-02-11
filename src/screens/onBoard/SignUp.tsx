@@ -2,10 +2,9 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useState } from 'react';
 import Wallet from 'ethereumjs-wallet';
 import Logo from '../../assets/icons/logo.png';
-import { useNavigation } from '@react-navigation/native';
+import { GlobalProps } from '~/navigators/GlobalNav';
 
-const SignUp = () => {
-  const navigation = useNavigation();
+const SignUp = ({ navigation }: GlobalProps) => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [address, setAddress] = useState<string>();
   console.log(privateKey, address, 'check wallet');
