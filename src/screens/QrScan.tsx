@@ -1,9 +1,9 @@
-import { View, Text, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { CameraScreen } from 'react-native-camera-kit';
-import { GlobalProps } from '../navigators/GlobalNav';
+import { QrScanProps } from '~/navigators/GlobalNav';
 
-const QrScan = ({ navigation }: GlobalProps) => {
+const QrScan = ({ navigation }: QrScanProps) => {
   const onSuccess = (e: any) => {
     console.log(e.data);
   };
@@ -24,6 +24,7 @@ const QrScan = ({ navigation }: GlobalProps) => {
   return (
     <View>
       <View style={{ width: 100, height: 100 }}>
+        {/*@ts-ignore*/}
         <CameraScreen
           onReadCode={onBarcodeScan}
           showFrame={true}

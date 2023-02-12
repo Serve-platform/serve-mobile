@@ -5,11 +5,11 @@ import Logo from '~/assets/icons/logo.png';
 import kakao from '~/assets/icons/kakao.png';
 import onboarding from '~/assets/images/onboarding.png';
 import walletIcon from '~/assets/icons/wallet.png';
-import { GlobalProps } from '~/navigators/GlobalNav';
 import theme from '~/styles/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SignUpProps } from '~/navigators/GlobalNav';
 
-const SignUp = ({ navigation }: GlobalProps) => {
+const SignUp = ({ navigation }: SignUpProps) => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [address, setAddress] = useState<string>();
   const generateWallet = () => {

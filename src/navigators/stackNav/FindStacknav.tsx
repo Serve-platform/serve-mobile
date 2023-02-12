@@ -8,13 +8,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Find from '~/screens/Find';
 import theme from '~/styles/color';
 
-type RootStackParamList = {
+export type FindStackParamList = {
   Find: undefined;
 };
 
-export type FindProps = NativeStackScreenProps<RootStackParamList, 'Find'>;
+export type FindProps = NativeStackScreenProps<FindStackParamList, 'Find'>;
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<FindStackParamList>();
 
 const FindStackNav = () => {
   return (

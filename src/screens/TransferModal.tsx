@@ -1,10 +1,9 @@
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React from 'react';
-import { GlobalProps } from '../navigators/GlobalNav';
 import { close } from '~/assets/icons';
+import { TransferModalProps } from '~/navigators/GlobalNav';
 
-const TransferModal = ({ navigation }: GlobalProps) => {
-  console.log('1');
+const TransferModal = ({ navigation }: TransferModalProps) => {
   return (
     <View
       style={{

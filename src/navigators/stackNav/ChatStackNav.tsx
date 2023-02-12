@@ -7,14 +7,13 @@ import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Chat from '~/screens/Chat';
 
-type RootStackParamList = {
+export type ChatStackParamList = {
   Chat: undefined;
-  // Detail: { userId: string };
 };
 
-export type ChatProps = NativeStackScreenProps<RootStackParamList, 'Chat'>;
+export type ChatProps = NativeStackScreenProps<ChatStackParamList, 'Chat'>;
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<ChatStackParamList>();
 
 const ChatStackNav = () => {
   return (

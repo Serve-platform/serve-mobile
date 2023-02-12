@@ -5,17 +5,15 @@ import {
 } from '@react-navigation/stack';
 import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Chat from '~/screens/Chat';
 import Shop from '~/screens/Shop';
 
-type RootStackParamList = {
+export type ShopStackParamList = {
   Shop: undefined;
-  // Detail: { userId: string };
 };
 
-export type ShopProps = NativeStackScreenProps<RootStackParamList, 'Shop'>;
+export type ShopProps = NativeStackScreenProps<ShopStackParamList, 'Shop'>;
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<ShopStackParamList>();
 
 const ShopStackNav = () => {
   return (

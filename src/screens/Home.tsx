@@ -12,14 +12,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import theme from '~/styles/color';
 import { onboarding } from '~/assets/images';
 import { downArrow } from '~/assets/icons';
-import { GlobalProps } from '../navigators/GlobalNav';
 import OnModal from '~/component/Home/OnModal';
 import OffModal from '~/component/Home/OffModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getQrSvg } from '~/api';
 import { useQuery } from 'react-query';
+import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
+import { useNavigation } from '@react-navigation/native';
 
-const Home = ({ navigation }: GlobalProps) => {
+const Home = () => {
+  const { navigation } = useNavigation<HomeStackNavProps>();
   const [onServe, setOnServe] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [OnmodalVisible, setOnModalVisible] = useState(false);

@@ -10,24 +10,37 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import QrScreen from '~/screens/QrScreen';
 import QrScan from '~/screens/QrScan';
 import TransferModal from '~/screens/TransferModal';
-type RootStackParamList = {
+
+export type GlobalStackParamList = {
   SignUp: undefined;
   TabNav: undefined;
-  QrScreen: undefined;
+  QrScreen: { qrData: string };
   QrScan: undefined;
   TransferModal: undefined;
 };
 
-export type GlobalProps = NativeStackScreenProps<
-  RootStackParamList,
-  'SignUp',
-  'TabNav',
-  'QrScreen',
-  'QrScan',
+export type SignUpProps = NativeStackScreenProps<
+  GlobalStackParamList,
+  'SignUp'
+>;
+export type TabNavProps = NativeStackScreenProps<
+  GlobalStackParamList,
+  'TabNav'
+>;
+export type QrScreenProps = NativeStackScreenProps<
+  GlobalStackParamList,
+  'QrScreen'
+>;
+export type QrScanProps = NativeStackScreenProps<
+  GlobalStackParamList,
+  'QrScan'
+>;
+export type TransferModalProps = NativeStackScreenProps<
+  GlobalStackParamList,
   'TransferModal'
 >;
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<GlobalStackParamList>();
 
 const GlobalNav = () => {
   return (
