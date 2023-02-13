@@ -4,23 +4,19 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import React from 'react';
-import Home from '~/screens/Home';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Profile from '~/screens/Profile';
+import Chat from '~/screens/Chat';
 
 type RootStackParamList = {
-  Profile: undefined;
+  Chat: undefined;
   // Detail: { userId: string };
 };
 
-export type ProfileProps = NativeStackScreenProps<
-  RootStackParamList,
-  'Profile'
->;
+export type ChatProps = NativeStackScreenProps<RootStackParamList, 'Chat'>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const ProfileStackNav = () => {
+const ChatStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -30,16 +26,16 @@ const ProfileStackNav = () => {
             : CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen
-        name="Profile"
+        name="Chat"
         options={{
           headerShown: false,
         }}
-        component={Profile}
+        component={Chat}
       />
     </Stack.Navigator>
   );
 };
 
-export default ProfileStackNav;
+export default ChatStackNav;
 
 const styles = StyleSheet.create({});

@@ -1,15 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { FeedProps } from '~/navigators/stackNav/FeedStackNav';
+import { ChatProps } from '~/navigators/stackNav/ChatStackNav';
 
-const Feed = ({}: FeedProps) => {
+const Chat = ({}: ChatProps) => {
   return (
     <View>
-      <Text>Feed</Text>
+      <Text>Chat</Text>
     </View>
   );
 };
 
-export default Feed;
+export default Chat;
 
 const styles = StyleSheet.create({});

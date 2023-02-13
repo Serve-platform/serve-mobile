@@ -1,15 +1,15 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { ProfileProps } from '~/navigators/stackNav/ProfileStackNav';
+import { ShopProps } from '~/navigators/stackNav/ShopStackNav';
 
-const Profile = ({}: ProfileProps) => {
+const Shop = ({}: ShopProps) => {
   return (
     <View>
-      <Text>Profile</Text>
+      <Text>Shop</Text>
     </View>
   );
 };
 
-export default Profile;
+export default Shop;
 
 const styles = StyleSheet.create({});

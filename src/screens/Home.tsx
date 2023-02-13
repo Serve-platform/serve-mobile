@@ -1,299 +1,220 @@
-import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
+  Animated,
+  Dimensions,
+  Easing,
+  Image,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  NativeModules,
-  Platform,
-  ScrollView,
   View,
-  NativeEventEmitter,
 } from 'react-native';
-import {
-  PERMISSIONS,
-  request,
-  requestMultiple,
-} from 'react-native-permissions';
-import BleManager from 'react-native-ble-manager';
-import BLEAdvertiser from 'react-native-ble-advertiser';
-
-const SERVICE_UUID = '25AE1441-05D3-4C5B-8281-93D4E07420CF';
-const BleManagerModule = NativeModules.BleManager;
-const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+import React, { useEffect, useRef, useState } from 'react';
+import theme from '~/styles/color';
+import { onboarding } from '~/assets/images';
+import { downArrow } from '~/assets/icons';
 
 const Home = () => {
-  const [list, setList] = useState([]);
-  const peripherals = new Map();
+  const [onServe, setOnServe] = useState(false);
+  const moveAnim = useRef(new Animated.Value(-2)).current;
+
+  const moveOn = () => {
+    Animated.timing(moveAnim, {
+      toValue: 92,
+      duration: 150,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const moveOff = async () => {
+    Animated.timing(moveAnim, {
+      toValue: -2,
+      duration: 150,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  };
+
   useEffect(() => {
-    const permission = async () => {
-      let result: any = null;
-
-      if (Platform.OS === 'ios') {
-        result = await request(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
-      }
-      if (Platform.OS === 'android') {
-        result = await requestMultiple([
-          PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
-          PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
-          PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-          PERMISSIONS.ANDROID.BLUETOOTH_ADVERTISE,
-        ]);
-      }
-
-      if (result['android.permission.BLUETOOTH_CONNECT']) {
-        BleManager.start({ showAlert: false }).then(() => {
-          console.log('Module initialized');
-        });
-      }
-    };
-    permission();
-
-    const discover = bleManagerEmitter.addListener(
-      'BleManagerDiscoverPeripheral',
-      handleDiscoverPeripheral,
-    );
-
-    const disconnect = bleManagerEmitter.addListener(
-      'BleManagerDisconnectPeripheral',
-      handleDisconnectedPeripheral,
-    );
-
-    return () => {
-      console.log('unmount');
-      discover.remove();
-      disconnect.remove();
-    };
-  }, []);
-
-  const scan = () => {
-    BleManager.scan([SERVICE_UUID], 5, true, {
-      reportDelay: 0,
-      scanMode: 2,
-      matchMode: 1,
-      numberOfMatches: 1,
-    }).then(scanResult => {
-      console.log(scanResult, 'scanResult');
-      // Success code
-      console.log('Scan started');
-    });
-  };
-
-  const enableBluetooth = () => {
-    if (Platform.OS === 'android') {
-      BleManager.enableBluetooth()
-        .then(() => {
-          // Success code
-          console.log('The bluetooth is already enabled or the user confirm');
-        })
-        .catch(error => {
-          // Failure code
-          console.log('The user refuse to enable bluetooth');
-        });
+    if (onServe) {
+      moveOn();
+    } else {
+      moveOff();
     }
-  };
-
-  const getPeripheral = () => {
-    BleManager.getConnectedPeripherals([SERVICE_UUID]).then(results => {
-      // Success code
-      console.log('Connected peripherals: ' + results.length);
-      for (var i = 0; i < results.length; i++) {
-        var peripheral = results[i];
-        //@ts-ignore
-        peripheral.connected = true;
-        peripherals.set(peripheral.id, peripheral);
-        //@ts-ignore
-        setList(Array.from(peripherals.values()));
-      }
-    });
-  };
-
-  const connect = () => {
-    BleManager.connect(SERVICE_UUID)
-      .then(() => {
-        // Success code
-        console.log('Connected');
-      })
-      .catch(error => {
-        // Failure code
-        console.log(error);
-      });
-  };
-
-  const disconnect = () => {
-    //@ts-ignore
-    BleManager.disconnect(list[0].id)
-      .then(() => {
-        // Success code
-        console.log('Disconnected');
-      })
-      .catch(error => {
-        // Failure code
-        console.log(error);
-      });
-  };
-
-  const stop = () => {
-    BleManager.stopScan().then(() => {
-      // Success code
-      console.log('Scan stopped');
-    });
-  };
-
-  // AgEaEQfPIHTg1JOBgltM0wVBFK4lAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-  const handleDiscoverPeripheral = (peripheral: any) => {
-    // 중복 제거
-    if (list.find((dev: any) => dev.data === peripheral.data)) {
-      //@ts-ignore
-      return;
-    }
-
-    console.log('Got ble peripheral', peripheral);
-    if (!peripheral.name) {
-      peripheral.name = 'NO NAME';
-    }
-    peripherals.set(peripheral.id, peripheral);
-    //@ts-ignore
-    setList(Array.from(peripherals.values()));
-  };
-
-  const handleDisconnectedPeripheral = (data: any) => {
-    let peripheral = peripherals.get(data.peripheral);
-    if (peripheral) {
-      peripheral.connected = false;
-      peripherals.set(peripheral.id, peripheral);
-      //@ts-ignore
-      setList(Array.from(peripherals.values()));
-    }
-    console.log('Disconnected from ' + data.peripheral);
-  };
-
-  const advertise = () => {
-    BLEAdvertiser.setCompanyId(0x00e0);
-    BLEAdvertiser.broadcast(SERVICE_UUID, [], {}) // The service UUID and additional manufacturer data.
-      .then(success => console.log('Broadcasting Successful', success))
-      .catch(error => console.log('Broadcasting Error', error));
-  };
+  }, [onServe]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={{ marginBottom: 80 }}>
-        {list.map((item, index) => (
-          <View
-            style={{ marginBottom: 10, backgroundColor: 'black' }}
-            key={index}>
-            <Text style={{ color: 'white' }}>{JSON.stringify(item)}</Text>
+    <View style={styles.container}>
+      <View
+        style={{
+          paddingHorizontal: 30,
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <View>
+          <Text style={styles.title}>
+            Hi,
+            <Text style={{ color: theme.color.main }}> Wendy!</Text>
+          </Text>
+          <Text
+            style={{
+              marginTop: 14,
+              color: theme.color.white,
+              fontWeight: '500',
+            }}>
+            Lv1
+          </Text>
+        </View>
+
+        <View
+          style={{
+            width: 46,
+            height: 46,
+            borderWidth: 1,
+            borderColor: theme.color.main,
+            borderRadius: 46,
+          }}
+        />
+      </View>
+
+      <Image
+        source={onboarding}
+        style={{
+          marginVertical: 24,
+          alignSelf: 'center',
+          width: 206,
+          height: 199,
+        }}
+      />
+
+      {/* 탑승 정보 */}
+      <View style={styles.boardInfo}>
+        <View
+          style={{
+            position: 'absolute',
+            top: -18,
+            borderWidth: 1,
+            borderColor: theme.color.main,
+            borderRadius: 20,
+            paddingHorizontal: 8,
+            paddingVertical: 4,
+            backgroundColor: theme.color.black,
+          }}>
+          <Text style={{ color: theme.color.main, fontWeight: '700' }}>
+            Enter Boarding Info.
+          </Text>
+        </View>
+        <Text style={{ fontSize: 20, color: theme.color.white }}>
+          탑승 정보 입력
+        </Text>
+      </View>
+
+      {/* SERVE 드래그 버튼 */}
+      <View style={styles.dragContainer}>
+        <>
+          <Pressable onPress={() => setOnServe(!onServe)}>
+            <Animated.View
+              style={[
+                styles.dragEnableButton,
+                {
+                  left: -2,
+                  backgroundColor: onServe
+                    ? theme.color.main
+                    : theme.color.black,
+                  transform: [{ translateY: moveAnim }],
+                },
+              ]}>
+              <Text
+                style={[
+                  styles.dragEnableText,
+                  {
+                    color: onServe ? theme.color.black : theme.color.main,
+                  },
+                ]}>
+                {onServe ? 'On SERVE' : 'Off SERVE'}
+              </Text>
+            </Animated.View>
+          </Pressable>
+          <View style={[styles.dragDisableButton, { top: -2, left: -2 }]}>
+            <Text style={styles.dragDisableText}>Drag to cancel</Text>
           </View>
-        ))}
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            backgroundColor: 'orange',
-          }}
-          onPress={advertise}>
-          <Text style={{ textAlign: 'center' }}>advertise</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            marginTop: 50,
-            backgroundColor: 'orange',
-          }}
-          onPress={enableBluetooth}>
-          <Text style={{ textAlign: 'center' }}>enableBluetooth</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            backgroundColor: 'orange',
-            marginTop: 50,
-          }}
-          onPress={getPeripheral}>
-          <Text style={{ textAlign: 'center' }}>getPeripheral</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            backgroundColor: 'orange',
-            marginTop: 50,
-          }}
-          onPress={scan}>
-          <Text style={{ textAlign: 'center' }}>scan</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            backgroundColor: 'orange',
-            marginTop: 50,
-          }}
-          onPress={stop}>
-          <Text style={{ textAlign: 'center' }}>stop</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            backgroundColor: 'orange',
-            marginTop: 50,
-          }}
-          onPress={connect}>
-          <Text style={{ textAlign: 'center' }}>connect</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            height: 100,
-            backgroundColor: 'orange',
-            marginTop: 50,
-          }}
-          onPress={disconnect}>
-          <Text style={{ textAlign: 'center' }}>disConnect</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+          <Image
+            source={downArrow}
+            style={{
+              width: 24,
+              height: 24,
+              zIndex: -1,
+              alignSelf: 'center',
+              transform: [{ rotate: onServe ? '180deg' : '0deg' }],
+            }}
+          />
+          <View style={[styles.dragDisableButton, { bottom: -2, left: -2 }]}>
+            <Text style={styles.dragDisableText}>Drag to SERVE</Text>
+          </View>
+        </>
+      </View>
+    </View>
   );
 };
+
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
   },
-  heartRateTitleWrapper: {
-    flex: 1,
-    justifyContent: 'center',
+  title: {
+    fontWeight: '700',
+    fontSize: 24,
+    color: theme.color.white,
+  },
+  boardInfo: {
+    borderTopWidth: 4,
+    borderBottomWidth: 4,
+    borderColor: theme.color.grayscale.D9D9D9,
+    backgroundColor: 'rgba(245, 245, 245, 0.4)',
+    paddingVertical: 18,
     alignItems: 'center',
   },
-  heartRateTitleText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginHorizontal: 20,
-    color: 'black',
+  dragContainer: {
+    marginTop: 38,
+    alignSelf: 'center',
+    width: Dimensions.get('window').width - 90,
+    height: 164,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: theme.color.main,
+    borderStyle: 'dashed',
   },
-  heartRateText: {
-    fontSize: 25,
-    marginTop: 15,
-  },
-  ctaButton: {
-    backgroundColor: 'purple',
-    justifyContent: 'center',
+  dragEnableButton: {
+    // position: 'absolute',
+    width: Dimensions.get('window').width - 90,
+    borderWidth: 2,
+    borderColor: theme.color.main,
     alignItems: 'center',
-    height: 50,
-    marginHorizontal: 20,
-    marginBottom: 100,
-    borderRadius: 8,
+    borderRadius: 50,
+    paddingVertical: 15,
   },
-  ctaButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
+  dragDisableButton: {
+    position: 'absolute',
+    width: Dimensions.get('window').width - 90,
+    borderWidth: 2,
+    borderColor: 'rgba(239, 255, 55, 0.3)',
+    alignItems: 'center',
+    borderRadius: 50,
+    paddingVertical: 15,
+    borderStyle: 'dashed',
+    zIndex: -1,
+  },
+  dragEnableText: {
+    fontSize: 26,
+    fontWeight: '700',
+  },
+  dragDisableText: {
+    color: 'rgba(239, 255, 55, 0.3)',
+    fontSize: 26,
+    fontWeight: '700',
   },
 });
-
-export default Home;

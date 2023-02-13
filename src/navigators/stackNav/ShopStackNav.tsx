@@ -4,40 +4,39 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import React from 'react';
-import Home from '~/screens/Home';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import theme from '~/styles/color';
+import Chat from '~/screens/Chat';
+import Shop from '~/screens/Shop';
 
 type RootStackParamList = {
-  Home: undefined;
+  Shop: undefined;
   // Detail: { userId: string };
 };
 
-export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+export type ShopProps = NativeStackScreenProps<RootStackParamList, 'Shop'>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const HomeStackNav = () => {
+const ShopStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        cardStyle: { backgroundColor: theme.color.black },
         cardStyleInterpolator:
           Platform.OS === 'android'
             ? CardStyleInterpolators.forFadeFromBottomAndroid
             : CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen
-        name="Home"
+        name="Shop"
         options={{
           headerShown: false,
         }}
-        component={Home}
+        component={Shop}
       />
     </Stack.Navigator>
   );
 };
 
-export default HomeStackNav;
+export default ShopStackNav;
 
 const styles = StyleSheet.create({});
