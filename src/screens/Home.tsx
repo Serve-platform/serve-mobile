@@ -12,10 +12,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import theme from '~/styles/color';
 import { onboarding } from '~/assets/images';
 import { downArrow } from '~/assets/icons';
+import { GlobalProps } from '../navigators/GlobalNav';
+import OnModal from '~/component/Home/OnModal';
+import OffModal from '~/component/Home/OffModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-const Home = () => {
+const Home = ({ navigation }: GlobalProps) => {
   const [onServe, setOnServe] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [OnmodalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
+  const [qrData, setQrData] = useState('');
 
   const moveOn = () => {
     Animated.timing(moveAnim, {
@@ -25,7 +33,35 @@ const Home = () => {
       useNativeDriver: true,
     }).start();
   };
+  const moveQr = () => {
+    setOnModalVisible(!OnmodalVisible);
+    navigation.navigate('QrScan');
+  };
 
+  const address__ = AsyncStorage.getItem('Address');
+  const balance__ = 1;
+  const apiUrl = `http://ec2-3-35-25-21.ap-northeast-2.compute.amazonaws.com:3000/api/users/createQr?address=${address__}&balance=${balance__}`;
+
+  console.log(onServe, modalVisible, OnmodalVisible, 'modalVisible');
+
+  async function postData(): Promise<void> {
+    axios
+      .get(apiUrl)
+      .then(response => {
+        setQrData(response.data.result);
+        console.log(qrData, 'qrdata');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+  const moveQrCode = () => {
+    setModalVisible(!modalVisible);
+    postData();
+    navigation.navigate('QrScreen', {
+      qrData: qrData,
+    });
+  };
   const moveOff = async () => {
     Animated.timing(moveAnim, {
       toValue: -2,
@@ -78,7 +114,6 @@ const Home = () => {
           }}
         />
       </View>
-
       <Image
         source={onboarding}
         style={{
@@ -88,7 +123,6 @@ const Home = () => {
           height: 199,
         }}
       />
-
       {/* 탑승 정보 */}
       <View style={styles.boardInfo}>
         <View
@@ -110,11 +144,16 @@ const Home = () => {
           탑승 정보 입력
         </Text>
       </View>
-
       {/* SERVE 드래그 버튼 */}
       <View style={styles.dragContainer}>
         <>
-          <Pressable onPress={() => setOnServe(!onServe)}>
+          <Pressable
+            onPress={() => {
+              setOnServe(!onServe);
+              onServe
+                ? setModalVisible(!modalVisible)
+                : setOnModalVisible(!OnmodalVisible);
+            }}>
             <Animated.View
               style={[
                 styles.dragEnableButton,
@@ -152,6 +191,12 @@ const Home = () => {
           />
           <View style={[styles.dragDisableButton, { bottom: -2, left: -2 }]}>
             <Text style={styles.dragDisableText}>Drag to SERVE</Text>
+          </View>
+          <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center' }}>
+              <OffModal offModalData={moveQrCode} modalVisible={modalVisible} />
+              <OnModal onModalData={moveQr} modalVisible={OnmodalVisible} />
+            </View>
           </View>
         </>
       </View>
