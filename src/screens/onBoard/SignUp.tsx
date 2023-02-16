@@ -9,7 +9,6 @@ import { GlobalProps } from '~/navigators/GlobalNav';
 import theme from '~/styles/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const SignUp = ({ navigation }: GlobalProps) => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [address, setAddress] = useState<string>();
