@@ -8,8 +8,6 @@ interface OffModalProps {
 }
 
 const OnModal = ({ onModalData, modalVisible }: OffModalProps) => {
-  console.log(modalVisible, 'modalVisible');
-
   return (
     <View>
       <Modal

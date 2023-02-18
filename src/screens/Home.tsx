@@ -16,7 +16,8 @@ import { GlobalProps } from '../navigators/GlobalNav';
 import OnModal from '~/component/Home/OnModal';
 import OffModal from '~/component/Home/OffModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import { getQrSvg } from '~/api';
+import { useQuery } from 'react-query';
 
 const Home = ({ navigation }: GlobalProps) => {
   const [onServe, setOnServe] = useState(false);
@@ -38,28 +39,32 @@ const Home = ({ navigation }: GlobalProps) => {
     navigation.navigate('QrScan');
   };
 
-  const address__ = AsyncStorage.getItem('Address');
   const balance__ = 1;
-  const apiUrl = `http://ec2-3-35-25-21.ap-northeast-2.compute.amazonaws.com:3000/api/users/createQr?address=${address__}&balance=${balance__}`;
+  const token = 'abc';
 
-  console.log(onServe, modalVisible, OnmodalVisible, 'modalVisible');
+  const getQrSvgQuery = useQuery(
+    ['getQrSvg', token],
+    async () => {
+      const address__ = await AsyncStorage.getItem('Address');
 
-  async function postData(): Promise<void> {
-    axios
-      .get(apiUrl)
-      .then(response => {
-        setQrData(response.data.result);
-        console.log(qrData, 'qrdata');
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }
+      if (address__) {
+        const result = await getQrSvg({
+          token__: token,
+          address__: address__,
+          balance__: balance__,
+        });
+        return result;
+      }
+    },
+    { enabled: !!token },
+  );
+
   const moveQrCode = () => {
     setModalVisible(!modalVisible);
-    postData();
+    const qrSvg = getQrSvgQuery.data;
+    setQrData(qrSvg);
     navigation.navigate('QrScreen', {
-      qrData: qrData,
+      qrData: qrSvg,
     });
   };
   const moveOff = async () => {
