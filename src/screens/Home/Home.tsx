@@ -22,7 +22,7 @@ import { useNavigation } from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
 
 const Home = () => {
-  const { navigation } = useNavigation<HomeStackNavProps>();
+  const navigation = useNavigation<HomeStackNavProps>();
   const [onServe, setOnServe] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [OnmodalVisible, setOnModalVisible] = useState(false);
@@ -187,9 +187,10 @@ const Home = () => {
           <Pressable
             onPress={() => {
               setOnServe(!onServe);
-              onServe
-                ? setModalVisible(!modalVisible)
-                : setOnModalVisible(!OnmodalVisible);
+              // todo 블루투스 연결
+              // onServe
+              //   ? setModalVisible(!modalVisible)
+              //   : setOnModalVisible(!OnmodalVisible);
             }}>
             <Animated.View
               style={[

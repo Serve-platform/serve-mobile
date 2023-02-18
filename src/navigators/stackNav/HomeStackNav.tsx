@@ -2,22 +2,24 @@ import { Platform, StyleSheet } from 'react-native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
-  StackScreenProps,
+  StackNavigationProp,
 } from '@react-navigation/stack';
 import React from 'react';
 import theme from '~/styles/color';
-import { CompositeScreenProps } from '@react-navigation/native';
+import { CompositeNavigationProp } from '@react-navigation/native';
 import { GlobalStackParamList } from '~/navigators/GlobalNav';
 
 import Home from '~/screens/Home/Home';
+import { TabParamList } from '~/navigators/TabNav';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 export type HomeStackParamList = {
   Home: undefined;
 };
 
-export type HomeStackNavProps = CompositeScreenProps<
-  StackScreenProps<GlobalStackParamList>,
-  StackScreenProps<HomeStackParamList>
+export type HomeStackNavProps = CompositeNavigationProp<
+  BottomTabNavigationProp<TabParamList, 'HomeStackNav'>,
+  StackNavigationProp<GlobalStackParamList>
 >;
 
 const Stack = createStackNavigator<HomeStackParamList>();
