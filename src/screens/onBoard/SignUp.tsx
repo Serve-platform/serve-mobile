@@ -7,17 +7,24 @@ import onboarding from '~/assets/images/onboarding.png';
 import walletIcon from '~/assets/icons/wallet.png';
 import { GlobalProps } from '~/navigators/GlobalNav';
 import theme from '~/styles/color';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const SignUp = ({ navigation }: GlobalProps) => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [address, setAddress] = useState<string>();
-  console.log(privateKey, address, 'check wallet');
   const generateWallet = () => {
     const wallet = Wallet.generate();
     setPrivateKey('0x' + wallet.getPrivateKey().toString('hex'));
+    AsyncStorage.setItem(
+      'PricateKey',
+      '0x' + wallet.getPrivateKey().toString('hex'),
+    );
     setAddress('0x' + wallet.getAddress().toString('hex'));
+    AsyncStorage.setItem('Address', '0x' + wallet.getAddress().toString('hex'));
     navigation.navigate('TabNav');
   };
+
   return (
     <View
       style={{
