@@ -25,6 +25,10 @@ const Home = ({ navigation }: GlobalProps) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
 
+const Home = () => {
+  const [onServe, setOnServe] = useState(false);
+  const moveAnim = useRef(new Animated.Value(-2)).current;
+
   const moveOn = () => {
     Animated.timing(moveAnim, {
       toValue: 92,
@@ -62,6 +66,16 @@ const Home = ({ navigation }: GlobalProps) => {
       qrData: qrData,
     });
   };
+  const moveOff = async () => {
+    Animated.timing(moveAnim, {
+      toValue: -2,
+      duration: 150,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  };
+
+
   const moveOff = async () => {
     Animated.timing(moveAnim, {
       toValue: -2,
@@ -114,6 +128,7 @@ const Home = ({ navigation }: GlobalProps) => {
           }}
         />
       </View>
+
       <Image
         source={onboarding}
         style={{
@@ -123,6 +138,7 @@ const Home = ({ navigation }: GlobalProps) => {
           height: 199,
         }}
       />
+
       {/* 탑승 정보 */}
       <View style={styles.boardInfo}>
         <View
@@ -154,6 +170,11 @@ const Home = ({ navigation }: GlobalProps) => {
                 ? setModalVisible(!modalVisible)
                 : setOnModalVisible(!OnmodalVisible);
             }}>
+
+      {/* SERVE 드래그 버튼 */}
+      <View style={styles.dragContainer}>
+        <>
+          <Pressable onPress={() => setOnServe(!onServe)}>
             <Animated.View
               style={[
                 styles.dragEnableButton,
