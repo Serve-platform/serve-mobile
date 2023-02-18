@@ -14,7 +14,6 @@ export type MyStackParamList = {
 export type MyProps = NativeStackScreenProps<MyStackParamList, 'My'>;
 
 const Stack = createStackNavigator<MyStackParamList>();
-
 const MyStackNav = () => {
   return (
     <Stack.Navigator
