@@ -7,14 +7,13 @@ import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import My from '~/screens/My';
 
-type RootStackParamList = {
+export type MyStackParamList = {
   My: undefined;
-  // Detail: { userId: string };
 };
 
-export type MyProps = NativeStackScreenProps<RootStackParamList, 'My'>;
+export type MyProps = NativeStackScreenProps<MyStackParamList, 'My'>;
 
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<MyStackParamList>();
 
 const MyStackNav = () => {
   return (

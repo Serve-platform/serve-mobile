@@ -1,11 +1,11 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import QRCode from 'react-native-qrcode-svg';
-import { GlobalProps } from '../navigators/GlobalNav';
 import { close } from '~/assets/icons';
 import { useRoute } from '@react-navigation/native';
+import { QrScreenProps } from '~/navigators/GlobalNav';
 
-const QrScreen = ({ navigation }: GlobalProps) => {
+const QrScreen = ({ navigation }: QrScreenProps) => {
   let base64Logo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAA..';
   const route = useRoute();
   const qrInfo = (route!.params! as any).qrData;

@@ -1,8 +1,9 @@
 import { Image, StyleSheet, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
-import HomeStackNav from '~/navigators/stackNav/HomeStackNav';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import HomeStackNav, {
+  HomeStackParamList,
+} from '~/navigators/stackNav/HomeStackNav';
 import {
   blankChat,
   blankFind,
@@ -15,26 +16,28 @@ import {
   my,
   shop,
 } from '~/assets/icons';
-import FindStackNav from '~/navigators/stackNav/FindStacknav';
-import MyStackNav from '~/navigators/stackNav/MyStackNav';
-import ChatStackNav from '~/navigators/stackNav/ChatStackNav';
-import ShopStackNav from '~/navigators/stackNav/ShopStackNav';
+import FindStackNav, {
+  FindStackParamList,
+} from '~/navigators/stackNav/FindStacknav';
+import MyStackNav, { MyStackParamList } from '~/navigators/stackNav/MyStackNav';
+import ChatStackNav, {
+  ChatStackParamList,
+} from '~/navigators/stackNav/ChatStackNav';
+import ShopStackNav, {
+  ShopStackParamList,
+} from '~/navigators/stackNav/ShopStackNav';
 import theme from '~/styles/color';
+import { NavigatorScreenParams } from '@react-navigation/native';
 
-type RootStackParamList = {
-  HomeStackNav: undefined;
-  ChatStackNav: undefined;
-  FindStackNav: undefined;
-  ShopStackNav: undefined;
-  MyStackNav: { userId: string };
+export type TabParamList = {
+  HomeStackNav: NavigatorScreenParams<HomeStackParamList>;
+  ChatStackNav: NavigatorScreenParams<ChatStackParamList>;
+  FindStackNav: NavigatorScreenParams<FindStackParamList>;
+  ShopStackNav: NavigatorScreenParams<ShopStackParamList>;
+  MyStackNav: NavigatorScreenParams<MyStackParamList>;
 };
 
-export type HomeStackNavProps = NativeStackScreenProps<
-  RootStackParamList,
-  'HomeStackNav'
->;
-
-const Tabs = createBottomTabNavigator<RootStackParamList>();
+const Tabs = createBottomTabNavigator<TabParamList>();
 
 const TabNavigator = () => {
   return (
@@ -69,7 +72,7 @@ const TabNavigator = () => {
         name="HomeStackNav"
         component={HomeStackNav}
         options={{
-          headerTitle: 'Home',
+          headerShown: false,
           tabBarLabel: ({ focused }) => (
             <Text style={styles(focused).labelStyle}>HOME</Text>
           ),
