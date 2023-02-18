@@ -20,9 +20,6 @@ import FindStackNav, {
   FindStackParamList,
 } from '~/navigators/stackNav/FindStacknav';
 import MyStackNav, { MyStackParamList } from '~/navigators/stackNav/MyStackNav';
-import ChatStackNav, {
-  ChatStackParamList,
-} from '~/navigators/stackNav/ChatStackNav';
 import ShopStackNav, {
   ShopStackParamList,
 } from '~/navigators/stackNav/ShopStackNav';
@@ -31,7 +28,6 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type TabParamList = {
   HomeStackNav: NavigatorScreenParams<HomeStackParamList>;
-  ChatStackNav: NavigatorScreenParams<ChatStackParamList>;
   FindStackNav: NavigatorScreenParams<FindStackParamList>;
   ShopStackNav: NavigatorScreenParams<ShopStackParamList>;
   MyStackNav: NavigatorScreenParams<MyStackParamList>;
@@ -80,22 +76,6 @@ const TabNavigator = () => {
             <Image
               style={{ width: 35, height: 35, marginBottom: 5 }}
               source={focused ? home : blankHome}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="ChatStackNav"
-        component={ChatStackNav}
-        options={{
-          headerTitle: 'Chat',
-          tabBarLabel: ({ focused }) => (
-            <Text style={styles(focused).labelStyle}>CHAT</Text>
-          ),
-          tabBarIcon: ({ focused }) => (
-            <Image
-              style={{ width: 35, height: 35, marginBottom: 5 }}
-              source={focused ? chat : blankChat}
             />
           ),
         }}

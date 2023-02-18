@@ -25,34 +25,27 @@ const Home = () => {
   const navigation = useNavigation<HomeStackNavProps>();
   const [onServe, setOnServe] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [OnmodalVisible, setOnModalVisible] = useState(false);
+  const [onModalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
-  const moveOn = () => {
-    Animated.timing(moveAnim, {
-      toValue: 92,
-      duration: 150,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start();
-  };
+
   const moveQr = () => {
-    setOnModalVisible(!OnmodalVisible);
+    setOnModalVisible(!onModalVisible);
     navigation.navigate('QrScan');
   };
-  const balance__ = 1;
+  const balance = 1;
   const token = 'abc';
 
   const getQrSvgQuery = useQuery(
     ['getQrSvg', token],
     async () => {
-      const address__ = await AsyncStorage.getItem('Address');
+      const address = await AsyncStorage.getItem('Address');
 
-      if (address__) {
+      if (address) {
         const result = await getQrSvg({
-          token__: token,
-          address__: address__,
-          balance__: balance__,
+          token,
+          address,
+          balance,
         });
         return result;
       }
@@ -68,6 +61,16 @@ const Home = () => {
       qrData: qrSvg,
     });
   };
+
+  const moveOn = () => {
+    Animated.timing(moveAnim, {
+      toValue: 92,
+      duration: 150,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start();
+  };
+
   const moveOff = async () => {
     Animated.timing(moveAnim, {
       toValue: -2,
@@ -233,7 +236,7 @@ const Home = () => {
           <View style={{ alignItems: 'center' }}>
             <View style={{ alignItems: 'center' }}>
               <OffModal offModalData={moveQrCode} modalVisible={modalVisible} />
-              <OnModal onModalData={moveQr} modalVisible={OnmodalVisible} />
+              <OnModal onModalData={moveQr} modalVisible={onModalVisible} />
             </View>
           </View>
         </>
