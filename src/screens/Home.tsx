@@ -25,7 +25,6 @@ const Home = ({ navigation }: GlobalProps) => {
   const [OnmodalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
-
   const moveOn = () => {
     Animated.timing(moveAnim, {
       toValue: 92,
@@ -38,7 +37,6 @@ const Home = ({ navigation }: GlobalProps) => {
     setOnModalVisible(!OnmodalVisible);
     navigation.navigate('QrScan');
   };
-
   const balance__ = 1;
   const token = 'abc';
 
@@ -149,7 +147,6 @@ const Home = ({ navigation }: GlobalProps) => {
           탑승 정보 입력
         </Text>
       </View>
-
       {/* SERVE 드래그 버튼 */}
       <View style={styles.dragContainer}>
         <>
