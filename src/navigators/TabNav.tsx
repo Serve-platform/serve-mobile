@@ -72,7 +72,7 @@ const TabNavigator = () => {
         name="HomeStackNav"
         component={HomeStackNav}
         options={{
-          headerTitle: 'Home',
+          headerShown: false,
           tabBarLabel: ({ focused }) => (
             <Text style={styles(focused).labelStyle}>HOME</Text>
           ),

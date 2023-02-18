@@ -19,6 +19,7 @@ import { getQrSvg } from '~/api';
 import { useQuery } from 'react-query';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
 import { useNavigation } from '@react-navigation/native';
+import TextTicker from 'react-native-text-ticker';
 
 const Home = () => {
   const { navigation } = useNavigation<HomeStackNavProps>();
@@ -129,7 +130,18 @@ const Home = () => {
         }}
       />
       {/* 탑승 정보 */}
-      <View style={styles.boardInfo}>
+      <Pressable
+        onPress={() => {
+          navigation.navigate('BoardingInfo');
+        }}
+        style={[
+          styles.boardInfo,
+          {
+            backgroundColor: onServe
+              ? theme.color.black
+              : 'rgba(245, 245, 245, 0.4)',
+          },
+        ]}>
         <View
           style={{
             position: 'absolute',
@@ -142,13 +154,33 @@ const Home = () => {
             backgroundColor: theme.color.black,
           }}>
           <Text style={{ color: theme.color.main, fontWeight: '700' }}>
-            Enter Boarding Info.
+            {onServe ? 'Edit' : 'Enter'} Boarding Info.
           </Text>
         </View>
-        <Text style={{ fontSize: 20, color: theme.color.white }}>
-          탑승 정보 입력
-        </Text>
-      </View>
+        {onServe ? (
+          <View
+            style={{
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <TextTicker
+              style={{
+                fontSize: 20,
+                color: theme.color.white,
+              }}
+              duration={3000}
+              loop
+              bounce={false}>
+              서울메트로 2호선 3386열차 3호칸 탑승 중
+            </TextTicker>
+          </View>
+        ) : (
+          <Text style={{ fontSize: 20, color: theme.color.white }}>
+            탑승 정보 입력
+          </Text>
+        )}
+      </Pressable>
+
       {/* SERVE 드래그 버튼 */}
       <View style={styles.dragContainer}>
         <>
@@ -214,6 +246,7 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 20,
   },
   title: {
     fontWeight: '700',
@@ -224,7 +257,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 4,
     borderBottomWidth: 4,
     borderColor: theme.color.grayscale.D9D9D9,
-    backgroundColor: 'rgba(245, 245, 245, 0.4)',
     paddingVertical: 18,
     alignItems: 'center',
   },
