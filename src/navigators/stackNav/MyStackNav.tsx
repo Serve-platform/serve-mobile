@@ -4,40 +4,38 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import React from 'react';
-import Home from '~/screens/Home';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import theme from '~/styles/color';
+import My from '~/screens/My';
 
 type RootStackParamList = {
-  Home: undefined;
+  My: undefined;
   // Detail: { userId: string };
 };
 
-export type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
+export type MyProps = NativeStackScreenProps<RootStackParamList, 'My'>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const HomeStackNav = () => {
+const MyStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        cardStyle: { backgroundColor: theme.color.black },
         cardStyleInterpolator:
           Platform.OS === 'android'
             ? CardStyleInterpolators.forFadeFromBottomAndroid
             : CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen
-        name="Home"
+        name="My"
         options={{
           headerShown: false,
         }}
-        component={Home}
+        component={My}
       />
     </Stack.Navigator>
   );
 };
 
-export default HomeStackNav;
+export default MyStackNav;
 
 const styles = StyleSheet.create({});

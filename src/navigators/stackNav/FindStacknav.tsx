@@ -4,39 +4,39 @@ import {
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import React from 'react';
-import Home from '~/screens/Home';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Feed from '~/screens/Feed';
+import Find from '~/screens/Find';
+import theme from '~/styles/color';
 
 type RootStackParamList = {
-  Feed: undefined;
-  // Detail: { userId: string };
+  Find: undefined;
 };
 
-export type FeedProps = NativeStackScreenProps<RootStackParamList, 'Feed'>;
+export type FindProps = NativeStackScreenProps<RootStackParamList, 'Find'>;
 
 const Stack = createStackNavigator<RootStackParamList>();
 
-const FeedStackNav = () => {
+const FindStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        cardStyle: { backgroundColor: theme.color.black },
         cardStyleInterpolator:
           Platform.OS === 'android'
             ? CardStyleInterpolators.forFadeFromBottomAndroid
             : CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen
-        name="Feed"
+        name="Find"
         options={{
           headerShown: false,
         }}
-        component={Feed}
+        component={Find}
       />
     </Stack.Navigator>
   );
 };
 
-export default FeedStackNav;
+export default FindStackNav;
 
 const styles = StyleSheet.create({});
