@@ -20,6 +20,7 @@ import { useQuery } from 'react-query';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
 import { useNavigation } from '@react-navigation/native';
 import TextTicker from 'react-native-text-ticker';
+import useBluetooth from '~/hooks/useBluetooth';
 
 const Home = () => {
   const navigation = useNavigation<HomeStackNavProps>();
@@ -28,6 +29,8 @@ const Home = () => {
   const [onModalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
+
+  const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
 
   const moveQr = () => {
     setOnModalVisible(!onModalVisible);
@@ -62,6 +65,12 @@ const Home = () => {
     });
   };
 
+  const onAdvertise = () => {
+    const currentServeState = !onServe;
+    setOnServe(currentServeState);
+    currentServeState ? onAdvertiseStart() : onAdvertiseStop();
+  };
+
   const moveOn = () => {
     Animated.timing(moveAnim, {
       toValue: 92,
@@ -71,7 +80,7 @@ const Home = () => {
     }).start();
   };
 
-  const moveOff = async () => {
+  const moveOff = () => {
     Animated.timing(moveAnim, {
       toValue: -2,
       duration: 150,
@@ -188,13 +197,13 @@ const Home = () => {
       <View style={styles.dragContainer}>
         <>
           <Pressable
-            onPress={() => {
-              setOnServe(!onServe);
-              // todo 블루투스 연결
-              // onServe
-              //   ? setModalVisible(!modalVisible)
-              //   : setOnModalVisible(!OnmodalVisible);
-            }}>
+            // onPress={() => {
+            //   setOnServe(!onServe);
+            //   // onServe
+            //   //   ? setModalVisible(!modalVisible)
+            //   //   : setOnModalVisible(!OnmodalVisible);
+            // }}>
+            onPress={onAdvertise}>
             <Animated.View
               style={[
                 styles.dragEnableButton,
