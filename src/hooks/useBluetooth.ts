@@ -1,9 +1,10 @@
-import {useEffect, useState} from "react";
-import {useMutation} from "react-query";
-import {PERMISSIONS, requestMultiple} from "react-native-permissions";
-import {NativeEventEmitter, NativeModules} from "react-native";
+import { useEffect, useState } from 'react';
+import { useMutation } from 'react-query';
+import { PERMISSIONS, requestMultiple } from 'react-native-permissions';
+import { NativeEventEmitter, NativeModules } from 'react-native';
 import { getUsers, getUserByUuid } from '~/api/user';
-import {UserProp} from "~/types/users";
+import { UserProp } from '~/types/users';
+import { getTradeUser } from '@api/trade';
 
 const useBluetooth = () => {
   const [bluetooth, setBluetooth] = useState();
@@ -34,66 +35,64 @@ const useBluetooth = () => {
 
     // 이벤트 리스터
     const eventEmitter = new NativeEventEmitter(NativeModules.BLEAdvertiser);
-    eventEmitter.addListener('foundUuid', (uuid) => {
-      console.log("> data : ", uuid);
+    eventEmitter.addListener('foundUuid', uuid => {
+      console.log('> data : ', uuid);
       peripherals.set(uuid.deviceAddress, uuid);
       // @ts-ignore
       setFoundUuids(Array.from(peripherals.values()));
       // @ts-ignore
       setFoundUsers(Array.from(peripherals.values()));
     });
-    eventEmitter.addListener('error', (message) => console.log("> error : ", message));
-    eventEmitter.addListener('log', (message) => console.log("> log : ", message));
+    eventEmitter.addListener('error', message =>
+      console.log('> error : ', message),
+    );
+    eventEmitter.addListener('log', message =>
+      console.log('> log : ', message),
+    );
   }, []);
 
-  // useEffect(() => {
-  //   console.log("> foundUuids : ", foundUuids)
-  //   onGetUserByUuid();
-  // }, [foundUuids])
+  useEffect(() => {
+    onGetUserByUuid();
+  }, [foundUuids]);
 
   // 전체 사용자 목록
   const { mutate: getUsersMutate } = useMutation(
-      async () => {
-        const {data} = await getUsers();
-        return data;
+    async () => {
+      const { data } = await getUsers();
+      return data;
+    },
+    {
+      onSuccess: data => {
+        const uuids = data.map((item: UserProp) => item.uuid);
+        onScanStart(uuids.join());
       },
-      {
-        onSuccess: (data) => {
-          const uuids = data.map((item: UserProp) => item.uuid);
-          onScanStart(uuids.join());
-        },
-        onError: () => {
-
-        },
-      }
+      onError: () => {},
+    },
   );
   const onGetUsersForScanStart = () => {
     getUsersMutate();
   };
 
-  // // 받은 uuids로 사용자 정보 조회
-  // const { mutate: getUserByUuidMutate } = useMutation(
-  //     async (uuid: string) => {
-  //       const {data} = await getUserByUuid(uuid);
-  //       return data;
-  //     },
-  //     {
-  //       onSuccess: (data) => {
-  //         console.log(">>>> data : ", data)
-  //         setFoundUsers(data);
-  //       },
-  //       onError: () => {
-  //
-  //       },
-  //     }
-  // );
-  // const onGetUserByUuid = () => {
-  //   foundUuids.map((uuid) => getUserByUuidMutate(uuid));
-  // };
+  // 받은 uuids로 사용자 정보 조회
+  const { mutate: getUserByUuidMutate } = useMutation(
+    async () => {
+      const { result } = await getTradeUser(foundUuids);
+      return result;
+    },
+    {
+      onSuccess: data => {
+        setFoundUsers(data);
+      },
+      onError: () => {},
+    },
+  );
+  const onGetUserByUuid = () => {
+    foundUuids.map(uuid => getUserByUuidMutate(uuid));
+  };
 
   // 자리 양도하기 위한 advertise start
   const onAdvertiseStart = () => {
-    const token = "724ef650-20c9-439d-a6bd-ba0bfabd4558";
+    const token = '724ef650-20c9-439d-a6bd-ba0bfabd4558';
     // @ts-ignore
     bluetooth.onAdvertiseStart(token);
   };
@@ -102,7 +101,7 @@ const useBluetooth = () => {
   const onAdvertiseStop = () => {
     // @ts-ignore
     bluetooth.onAdvertiseStop();
-  }
+  };
 
   // 자리 양도받기 위해 내릴 사람 찾기 start
   const onScanStart = (uuidsToString: string) => {
@@ -111,17 +110,24 @@ const useBluetooth = () => {
 
     setTimeout(() => {
       onScanStop();
-    }, 10000)
-  }
+    }, 10000);
+  };
 
   // 자리 양도받기 위해 내릴 사람 찾기 stop
   const onScanStop = () => {
     // @ts-ignore
     bluetooth.onScanStop();
-  }
+  };
 
-
-  return { foundUuids, setFoundUuids, foundUsers, onAdvertiseStart, onAdvertiseStop, onGetUsersForScanStart, onScanStop };
+  return {
+    foundUuids,
+    setFoundUuids,
+    foundUsers,
+    onAdvertiseStart,
+    onAdvertiseStop,
+    onGetUsersForScanStart,
+    onScanStop,
+  };
 };
 
 export default useBluetooth;
