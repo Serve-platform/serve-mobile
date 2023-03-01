@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
 import theme from '@styles/color';
-import Button from '~/component/Button';
+import Button from '~/components/Button';
 
 const Store = ({}: StoreProps) => {
   return (
