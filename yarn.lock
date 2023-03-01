@@ -7372,10 +7372,10 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
-react-native-ble-phone-to-phone@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-ble-phone-to-phone/-/react-native-ble-phone-to-phone-0.2.0.tgz#9f40aac4986017375a842c4a283419883c56cee2"
-  integrity sha512-e0jS5qhbLwPxKCSuzmvWzCzm3P0jn3CsCCw4AnCVlvXn1eleZ6D5VqqssSASVYp5n9LEcgq2ntEk9+Rz6dJUhg==
+react-native-ble-phone-to-phone@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-ble-phone-to-phone/-/react-native-ble-phone-to-phone-0.2.1.tgz#7dced346faf5ef065f3f26cec2ab3840cddab72f"
+  integrity sha512-unIe/bfJH8uPjLMpdPFB0+CbS+Ov3UdBOLGIUNabbcIRZ1spwVlXkKTyFGEDUVPiDls1zqGGdTRDiRtbqPmavg==
 
 react-native-camera-kit@^13.0.0:
   version "13.0.0"
