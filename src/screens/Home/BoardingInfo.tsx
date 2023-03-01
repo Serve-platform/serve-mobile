@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import theme from '~/styles/color';
-import Label from '~/component/Label';
-import Input from '~/component/Input';
-import Button from '~/component/Button';
+import Label from '~/components/Label';
+import Input from '~/components/Input';
+import Button from '~/components/Button';
 
 const BoardingInfo = () => {
   const [location, setLocation] = useState('서울특별시');

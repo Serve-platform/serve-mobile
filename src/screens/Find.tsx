@@ -10,7 +10,7 @@ import { FindProps } from '~/navigators/stackNav/FindStacknav';
 import useBluetooth from '~/hooks/useBluetooth';
 import { UserProp } from '~/types/users';
 import theme from '@styles/color';
-import Button from '~/component/Button';
+import Button from '~/components/Button';
 
 const Find = ({}: FindProps) => {
   const { foundUsers, onGetUsersForScanStart, onScanStop } = useBluetooth();
