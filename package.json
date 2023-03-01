@@ -33,7 +33,7 @@
     "process": "^0.11.10",
     "react": "18.2.0",
     "react-native": "0.71.3",
-    "react-native-ble-phone-to-phone": "^0.2.0",
+    "react-native-ble-phone-to-phone": "^0.2.1",
     "react-native-camera-kit": "^13.0.0",
     "react-native-crypto": "^2.2.0",
     "react-native-fast-image": "^8.6.3",
