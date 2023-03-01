@@ -11,16 +11,35 @@ import { SignUpProps } from '~/navigators/GlobalNav';
 
 const SignUp = ({ navigation }: SignUpProps) => {
   const [privateKey, setPrivateKey] = useState<string>();
+  const [privateKey_1, setPrivateKey_2] = useState<string>();
   const [address, setAddress] = useState<string>();
+  const [address_1, setAddress_2] = useState<string>();
+
   const generateWallet = () => {
     const wallet = Wallet.generate();
     setPrivateKey('0x' + wallet.getPrivateKey().toString('hex'));
     AsyncStorage.setItem(
-      'PricateKey',
+      'PrivateKey',
       '0x' + wallet.getPrivateKey().toString('hex'),
     );
     setAddress('0x' + wallet.getAddress().toString('hex'));
     AsyncStorage.setItem('Address', '0x' + wallet.getAddress().toString('hex'));
+    AsyncStorage.setItem('userCheck', '1');
+    navigation.navigate('TabNav');
+  };
+  const generateWallet_2 = () => {
+    const wallet = Wallet.generate();
+    setPrivateKey_2('0x' + wallet.getPrivateKey().toString('hex'));
+    AsyncStorage.setItem(
+      'PrivateKey2',
+      '0x' + wallet.getPrivateKey().toString('hex'),
+    );
+    setAddress_2('0x' + wallet.getAddress().toString('hex'));
+    AsyncStorage.setItem(
+      'Address2',
+      '0x' + wallet.getAddress().toString('hex'),
+    );
+    AsyncStorage.setItem('userCheck', '2');
     navigation.navigate('TabNav');
   };
 
@@ -56,36 +75,6 @@ const SignUp = ({ navigation }: SignUpProps) => {
       <View style={{ width: '100%' }}>
         <TouchableOpacity
           style={{
-            paddingVertical: 16,
-            borderRadius: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: '#FEE500',
-            display: 'flex',
-            flexDirection: 'row',
-          }}
-          onPress={() => {}}>
-          <Image
-            resizeMode="contain"
-            source={kakao}
-            style={{
-              marginRight: 15,
-              width: 20,
-              height: 19,
-            }}
-          />
-          <Text
-            style={{
-              color: theme.color.black,
-              fontSize: 17,
-              fontWeight: '500',
-            }}>
-            카카오톡으로 시작하기
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
             marginTop: 10,
             paddingVertical: 16,
             borderRadius: 5,
@@ -112,7 +101,38 @@ const SignUp = ({ navigation }: SignUpProps) => {
               fontSize: 17,
               fontWeight: '500',
             }}>
-            지갑으로 시작하기
+            유저1로 시작하기
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            marginTop: 10,
+            paddingVertical: 16,
+            borderRadius: 5,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderWidth: 1,
+            borderColor: theme.color.white,
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+          onPress={generateWallet_2}>
+          <Image
+            resizeMode="contain"
+            source={walletIcon}
+            style={{
+              marginRight: 15,
+              width: 24,
+              height: 24,
+            }}
+          />
+          <Text
+            style={{
+              color: theme.color.white,
+              fontSize: 17,
+              fontWeight: '500',
+            }}>
+            유저 2로 시작하기
           </Text>
         </TouchableOpacity>
       </View>

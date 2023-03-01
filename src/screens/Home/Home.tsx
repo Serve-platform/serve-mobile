@@ -29,9 +29,26 @@ const Home = () => {
   const [onModalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
+  const [address__, setAddress] = useState();
+  const [privateKey__, setPrivateKey] = useState();
 
+  const userCheck = async () => {
+    const userCheck_ = await AsyncStorage.getItem('userCheck');
+    if (userCheck_ === '1') {
+      const address = await AsyncStorage.getItem('Address');
+      const a = await AsyncStorage.getItem('PrivateKey');
+      setPrivateKey(a);
+      setAddress(address);
+    } else if (userCheck_ === '2') {
+      const address = await AsyncStorage.getItem('Address2');
+      const b = await AsyncStorage.getItem('PrivateKey2');
+      setPrivateKey(b);
+      setAddress(address);
+    }
+  };
+  userCheck();
+  console.log(address__, '----', privateKey__, '----');
   const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
-
   const moveQr = () => {
     setOnModalVisible(!onModalVisible);
     navigation.navigate('QrScan');
@@ -43,7 +60,6 @@ const Home = () => {
     ['getQrSvg', token],
     async () => {
       const address = await AsyncStorage.getItem('Address');
-
       if (address) {
         const result = await getQrSvg({
           token,
@@ -55,7 +71,6 @@ const Home = () => {
     },
     { enabled: !!token },
   );
-
   const moveQrCode = () => {
     setModalVisible(!modalVisible);
     const qrSvg = getQrSvgQuery.data;
@@ -112,14 +127,38 @@ const Home = () => {
             Hi,
             <Text style={{ color: theme.color.main }}> Wendy!</Text>
           </Text>
-          <Text
-            style={{
-              marginTop: 14,
-              color: theme.color.white,
-              fontWeight: '500',
-            }}>
-            Lv1
-          </Text>
+          <View style={{ flexDirection: 'row' }}>
+            <Text
+              style={{
+                marginTop: 14,
+                color: theme.color.white,
+                fontWeight: '500',
+              }}>
+              Lv1
+            </Text>
+            <Text
+              style={{
+                marginTop: 14,
+                color: theme.color.white,
+                fontWeight: '500',
+                fontSize: 8,
+              }}>
+              {'\n'}
+              {'\n'}
+              address : {address__}{' '}
+            </Text>
+            <Text
+              style={{
+                marginTop: 14,
+                color: theme.color.white,
+                fontWeight: '500',
+                fontSize: 8,
+              }}>
+              {''}
+              {'\n'}
+              balance :
+            </Text>
+          </View>
         </View>
 
         <View
