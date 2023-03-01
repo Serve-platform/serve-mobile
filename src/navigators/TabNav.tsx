@@ -1,9 +1,14 @@
-import { Image, StyleSheet, Text } from 'react-native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import FindStackNav, {
+  FindStackParamList,
+} from '~/navigators/stackNav/FindStacknav';
 import HomeStackNav, {
   HomeStackParamList,
 } from '~/navigators/stackNav/HomeStackNav';
+import { Image, StyleSheet, Text } from 'react-native';
+import MyStackNav, { MyStackParamList } from '~/navigators/stackNav/MyStackNav';
+import ShopStackNav, {
+  ShopStackParamList,
+} from '~/navigators/stackNav/ShopStackNav';
 import {
   blankChat,
   blankFind,
@@ -16,15 +21,11 @@ import {
   my,
   shop,
 } from '~/assets/icons';
-import FindStackNav, {
-  FindStackParamList,
-} from '~/navigators/stackNav/FindStacknav';
-import MyStackNav, { MyStackParamList } from '~/navigators/stackNav/MyStackNav';
-import ShopStackNav, {
-  ShopStackParamList,
-} from '~/navigators/stackNav/ShopStackNav';
-import theme from '~/styles/color';
+
 import { NavigatorScreenParams } from '@react-navigation/native';
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import theme from '~/styles/color';
 
 export type TabParamList = {
   HomeStackNav: NavigatorScreenParams<HomeStackParamList>;
@@ -45,16 +46,14 @@ const TabNavigator = () => {
 
         headerStyle: { backgroundColor: theme.color.black },
         headerTitleStyle: { color: theme.color.white, fontWeight: '900' },
-        // tabBarHideOnKeyboard: true,
 
         tabBarStyle: {
-          position: 'absolute',
-          height: 100,
+          // position: 'absolute',
+          height: 80,
           paddingTop: 20,
+          paddingBottom: 20,
 
           backgroundColor: theme.color.main,
-          // borderTopLeftRadius: 30,
-          // borderTopRightRadius: 30,
           shadowOffset: {
             width: 10,
             height: 8,
@@ -141,6 +140,6 @@ const styles = (focused: boolean) =>
       backgroundColor: 'transparent',
       color: theme.color.black,
       fontWeight: focused ? '900' : '600',
-      marginBottom: 28,
+      // marginBottom: 28,
     },
   });
