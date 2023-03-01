@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import React, { useState } from 'react';
 import Wallet from 'ethereumjs-wallet';
 import Logo from '~/assets/icons/logo.png';
-import kakao from '~/assets/icons/kakao.png';
+// import kakao from '~/assets/icons/kakao.png';
 import onboarding from '~/assets/images/onboarding.png';
 import walletIcon from '~/assets/icons/wallet.png';
 import theme from '~/styles/color';
@@ -12,6 +12,7 @@ import { SignUpProps } from '~/navigators/GlobalNav';
 const SignUp = ({ navigation }: SignUpProps) => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [address, setAddress] = useState<string>();
+
   const generateWallet = () => {
     const wallet = Wallet.generate();
     setPrivateKey('0x' + wallet.getPrivateKey().toString('hex'));
@@ -21,6 +22,26 @@ const SignUp = ({ navigation }: SignUpProps) => {
     );
     setAddress('0x' + wallet.getAddress().toString('hex'));
     AsyncStorage.setItem('Address', '0x' + wallet.getAddress().toString('hex'));
+    navigation.navigate('TabNav');
+  };
+
+  const onLogin1 = async () => {
+    AsyncStorage.setItem(
+      'token',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMjZmMDg2NzAtZmZkZi00MGViLTkwNjctNzhiOWFlNmU3OTE5Iiwibmlja05hbWUiOiLquYDrj4TtmIQiLCJpYXQiOjE2Nzc2ODM5MjF9.a_Vg9l5Qi3_poqecNcQjjqJX7GuCI3CBDWmDcm7m1tU',
+    );
+    AsyncStorage.setItem('nickName', '김도현');
+    AsyncStorage.setItem('uuid', '26f08670-ffdf-40eb-9067-78b9ae6e7919');
+    navigation.navigate('TabNav');
+  };
+
+  const onLogin2 = () => {
+    AsyncStorage.setItem(
+      'token',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMzQyNzMwZDEtOTIyMS00ZGEwLWFiOGItYmJkN2RhMDdjYTYyIiwibmlja05hbWUiOiLslYTsnbTsnKAiLCJpYXQiOjE2Nzc2ODM5NTJ9.xlEXyk2200KDsW-FF7jys94adZwZpvGt-JfAX8IzGu8',
+    );
+    AsyncStorage.setItem('nickName', '아이유');
+    AsyncStorage.setItem('uuid', '342730d1-9221-4da0-ab8b-bbd7da07ca62');
     navigation.navigate('TabNav');
   };
 
@@ -96,14 +117,14 @@ const SignUp = ({ navigation }: SignUpProps) => {
             display: 'flex',
             flexDirection: 'row',
           }}
-          onPress={generateWallet}>
+          onPress={onLogin1}>
           <Text
             style={{
               color: theme.color.white,
               fontSize: 17,
               fontWeight: '500',
             }}>
-            사용자1
+            사용자1(김도현)
           </Text>
         </TouchableOpacity>
 
@@ -119,14 +140,14 @@ const SignUp = ({ navigation }: SignUpProps) => {
             display: 'flex',
             flexDirection: 'row',
           }}
-          onPress={generateWallet}>
+          onPress={onLogin2}>
           <Text
             style={{
               color: theme.color.white,
               fontSize: 17,
               fontWeight: '500',
             }}>
-            사용자2
+            사용자2(아이유)
           </Text>
         </TouchableOpacity>
 
