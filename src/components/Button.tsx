@@ -6,13 +6,18 @@ type Props = {
   title: string;
   clickEvent?: () => void;
   style?: ViewStyle;
+  isSmall?: boolean;
 };
-const Input = ({ title, clickEvent, style }: Props) => {
+const Input = ({ title, clickEvent, style, isSmall = false }: Props) => {
   return (
     <TouchableOpacity
       style={[styles.container, style]}
       onPress={() => (clickEvent ? clickEvent : null)}>
-      <Text style={styles.title}>{title}</Text>
+      {isSmall ? (
+        <Text style={styles.small}>{title}</Text>
+      ) : (
+        <Text style={styles.title}>{title}</Text>
+      )}
     </TouchableOpacity>
   );
 };
@@ -20,9 +25,7 @@ const Input = ({ title, clickEvent, style }: Props) => {
 export default Input;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {},
   title: {
     fontSize: 20,
     color: theme.color.white,
@@ -35,5 +38,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 10,
     paddingVertical: 15,
+  },
+  small: {
+    fontSize: 12,
+    color: theme.color.white,
+    borderColor: theme.color.white,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    borderRightWidth: 3,
+    borderBottomWidth: 3,
+    textAlign: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
   },
 });
