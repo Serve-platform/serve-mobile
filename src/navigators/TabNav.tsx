@@ -1,36 +1,35 @@
-import FindStackNav, {
-  FindStackParamList,
-} from '~/navigators/stackNav/FindStacknav';
+import { Image, StyleSheet, Text } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from 'react';
 import HomeStackNav, {
   HomeStackParamList,
 } from '~/navigators/stackNav/HomeStackNav';
-import { Image, StyleSheet, Text } from 'react-native';
-import MyStackNav, { MyStackParamList } from '~/navigators/stackNav/MyStackNav';
-import ShopStackNav, {
-  ShopStackParamList,
-} from '~/navigators/stackNav/ShopStackNav';
 import {
   blankChat,
   blankFind,
   blankHome,
   blankMy,
-  blankShop,
+  blankStore,
   chat,
   find,
   home,
   my,
-  shop,
+  Store,
 } from '~/assets/icons';
-
-import { NavigatorScreenParams } from '@react-navigation/native';
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import FindStackNav, {
+  FindStackParamList,
+} from '~/navigators/stackNav/FindStacknav';
+import MyStackNav, { MyStackParamList } from '~/navigators/stackNav/MyStackNav';
+import StoreStackNav, {
+  StoreStackParamList,
+} from '@navigators/stackNav/StoreStackNav';
 import theme from '~/styles/color';
+import { NavigatorScreenParams } from '@react-navigation/native';
 
 export type TabParamList = {
   HomeStackNav: NavigatorScreenParams<HomeStackParamList>;
   FindStackNav: NavigatorScreenParams<FindStackParamList>;
-  ShopStackNav: NavigatorScreenParams<ShopStackParamList>;
+  StoreStackNav: NavigatorScreenParams<StoreStackParamList>;
   MyStackNav: NavigatorScreenParams<MyStackParamList>;
 };
 
@@ -96,17 +95,17 @@ const TabNavigator = () => {
         }}
       />
       <Tabs.Screen
-        name="ShopStackNav"
-        component={ShopStackNav}
+        name="StoreStackNav"
+        component={StoreStackNav}
         options={{
-          headerTitle: 'Shop',
+          headerTitle: 'Store',
           tabBarLabel: ({ focused }) => (
-            <Text style={styles(focused).labelStyle}>Shop</Text>
+            <Text style={styles(focused).labelStyle}>Store</Text>
           ),
           tabBarIcon: ({ focused }) => (
             <Image
               style={{ width: 35, height: 35, marginBottom: 5 }}
-              source={focused ? shop : blankShop}
+              source={focused ? Store : blankStore}
             />
           ),
         }}

@@ -5,36 +5,40 @@ import {
 } from '@react-navigation/stack';
 import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Shop from '~/screens/Shop';
+import Store from '@screens/Store';
+import theme from '@styles/color';
 
-export type ShopStackParamList = {
-  Shop: undefined;
+export type StoreStackParamList = {
+  Store: undefined;
 };
 
-export type ShopProps = NativeStackScreenProps<ShopStackParamList, 'Shop'>;
+export type StoreProps = NativeStackScreenProps<StoreStackParamList, 'Store'>;
 
-const Stack = createStackNavigator<ShopStackParamList>();
+const Stack = createStackNavigator<StoreStackParamList>();
 
-const ShopStackNav = () => {
+const StoreStackNav = () => {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerStyle: { backgroundColor: theme.color.black },
+        headerTitleStyle: { color: theme.color.white, fontWeight: '900' },
+        cardStyle: { backgroundColor: theme.color.black },
         cardStyleInterpolator:
           Platform.OS === 'android'
             ? CardStyleInterpolators.forFadeFromBottomAndroid
             : CardStyleInterpolators.forHorizontalIOS,
       }}>
       <Stack.Screen
-        name="Shop"
+        name="Store"
         options={{
           headerShown: false,
         }}
-        component={Shop}
+        component={Store}
       />
     </Stack.Navigator>
   );
 };
 
-export default ShopStackNav;
+export default StoreStackNav;
 
 const styles = StyleSheet.create({});
