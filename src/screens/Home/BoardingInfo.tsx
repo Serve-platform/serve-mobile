@@ -1,13 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { BoardingInfoProps } from '~/navigators/GlobalNav';
 import theme from '~/styles/color';
 import Label from '~/component/Label';
 import Input from '~/component/Input';
 import Button from '~/component/Button';
 
-const BoardingInfo = ({}: BoardingInfoProps) => {
+const BoardingInfo = () => {
   const [location, setLocation] = useState('서울특별시');
   const [line, setLine] = useState('2호선');
   const [trainNumber, setTrainNumber] = useState('12345');

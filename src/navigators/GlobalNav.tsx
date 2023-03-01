@@ -3,6 +3,7 @@ import React from 'react';
 import {
   createStackNavigator,
   CardStyleInterpolators,
+  StackNavigationProp,
 } from '@react-navigation/stack';
 import TabNavigator from '~/navigators/TabNav';
 import SignUp from '~/screens/onBoard/SignUp';
@@ -13,6 +14,7 @@ import TransferModal from '~/screens/TransferModal';
 import BoardingInfo from '~/screens/Home/BoardingInfo';
 import theme from '~/styles/color';
 import { close } from '~/assets/icons';
+import { useNavigation } from '@react-navigation/native';
 
 export type GlobalStackParamList = {
   SignUp: undefined;
@@ -38,7 +40,7 @@ export type GlobalProps = NativeStackScreenProps<
   GlobalStackParamList,
   'TabNav'
 >;
-export type BoardingInfoProps = NativeStackScreenProps<
+export type BoardingInfoProps = StackNavigationProp<
   GlobalStackParamList,
   'BoardingInfo'
 >;
@@ -58,6 +60,8 @@ export type TransferModalProps = NativeStackScreenProps<
 const Stack = createStackNavigator<GlobalStackParamList>();
 
 const GlobalNav = () => {
+  const navigation = useNavigation<BoardingInfoProps>();
+
   return (
     <>
       <Stack.Navigator
@@ -97,6 +101,7 @@ const GlobalNav = () => {
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
                 style={{ marginLeft: 30 }}
                 onPress={() => {
+                  navigation.goBack();
                   console.log('close');
                 }}>
                 <Image
