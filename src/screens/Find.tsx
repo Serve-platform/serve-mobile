@@ -32,7 +32,7 @@ const Find = ({}: FindProps) => {
               </View>
               <Button
                 title={`좌석보기 >`}
-                isSmall={true}
+                type={`small`}
                 style={{ right: 0 }}
               />
             </View>
