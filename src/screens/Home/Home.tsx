@@ -34,6 +34,7 @@ const Home = () => {
   const [onModalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
+  const [nickName, setNickName] = useState(null);
 
   const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
 
@@ -51,7 +52,7 @@ const Home = () => {
 
       if (address) {
         const result = await getQrSvg({
-          token,
+          // token,
           address,
           balance,
         });
@@ -70,7 +71,7 @@ const Home = () => {
     });
   };
 
-  const onAdvertise = () => {
+  const onAdvertise = async () => {
     setModalOpen({
       children: (
         <View
@@ -143,9 +144,17 @@ const Home = () => {
       ),
       isOpen: true,
     });
+
     const currentServeState = !onServe;
+
     setOnServe(currentServeState);
-    currentServeState ? onAdvertiseStart() : onAdvertiseStop();
+
+    if (currentServeState) {
+      const uuid = await AsyncStorage.getItem('uuid');
+      uuid && onAdvertiseStart(uuid);
+    } else {
+      onAdvertiseStop();
+    }
   };
 
   const moveOn = () => {
@@ -165,6 +174,16 @@ const Home = () => {
       useNativeDriver: true,
     }).start();
   };
+
+  const getNickName = async () => {
+    const nickName = await AsyncStorage.getItem('nickName');
+    // @ts-ignore
+    setNickName(nickName);
+  };
+
+  useEffect(() => {
+    getNickName().then();
+  }, []);
 
   useEffect(() => {
     if (onServe) {
@@ -187,7 +206,7 @@ const Home = () => {
         <View>
           <Text style={styles.title}>
             Hi,
-            <Text style={{ color: theme.color.main }}> Wendy!</Text>
+            <Text style={{ color: theme.color.main }}> {nickName}!</Text>
           </Text>
           <Text
             style={{

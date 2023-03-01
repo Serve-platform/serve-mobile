@@ -7,10 +7,8 @@ import {
   scanStop,
 } from 'react-native-ble-phone-to-phone';
 import { useEffect, useState } from 'react';
-
 import { UserProp } from '~/types/users';
-import { getTradeUser } from '@api/trade';
-import { getUsers } from '~/api/user';
+import { getTradeUser, getUsers } from '~/api';
 import { useMutation } from 'react-query';
 
 const useBluetooth = () => {
@@ -79,6 +77,7 @@ const useBluetooth = () => {
     },
     {
       onSuccess: data => {
+        console.log('> getUserByUuidMutate data : ', data);
         setFoundUsers(data);
       },
       onError: () => {},
@@ -89,15 +88,12 @@ const useBluetooth = () => {
   };
 
   // 자리 양도하기 위한 advertise start
-  const onAdvertiseStart = () => {
-    const token = '724ef650-20c9-439d-a6bd-ba0bfabd4558';
-    // @ts-ignore
-    advertiseStart(token);
+  const onAdvertiseStart = (uuid: string) => {
+    advertiseStart(uuid);
   };
 
   // 자리 양도하기 위한 advertise stop
   const onAdvertiseStop = () => {
-    // @ts-ignore
     advertiseStop();
   };
 
