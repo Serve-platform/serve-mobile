@@ -1,21 +1,18 @@
 import {
-  Animated,
   Dimensions,
-  Easing,
   Image,
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { avatar, downArrow } from '~/assets/icons';
+import React, { useEffect, useState } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DragButton from '~/components/DragButton';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
 import TextTicker from 'react-native-text-ticker';
+import { avatar } from '~/assets/icons';
 import { getQrSvg } from '~/api';
 import { modalState } from '~/recoil/atoms';
 import { onboarding } from '~/assets/images';
@@ -71,17 +68,11 @@ const Home = () => {
 
   const onAdvertise = async () => {
     setModalOpen({
+      onPress: () => {},
+      onCancelText: '거절',
+      onPressText: '거래하기',
       children: (
-        <View
-          style={{
-            width: 320,
-            height: 290,
-            backgroundColor: theme.color.white,
-            alignItems: 'center',
-            alignSelf: 'center',
-            justifyContent: 'space-around',
-            borderRadius: 20,
-          }}>
+        <>
           <View style={{ alignItems: 'center' }}>
             <Text
               style={{
@@ -118,27 +109,7 @@ const Home = () => {
               }}
             />
           </View>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#EFFF37',
-              width: 275,
-              height: 50,
-              borderRadius: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderWidth: 2,
-              borderColor: 'black',
-            }}
-            onPress={() => {}}>
-            <Text style={{ fontSize: 18, color: theme.color.black }}>
-              거래하기
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={{ color: theme.color.black }}>거절</Text>
-          </TouchableOpacity>
-        </View>
+        </>
       ),
       isOpen: true,
     });

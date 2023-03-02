@@ -5,7 +5,10 @@ interface ModalStateType {
   isOpen: boolean;
   children?: JSX.Element;
   isBackdrop?: boolean;
-  isCancelButton?: boolean;
+  onPress: () => void;
+  onPressText: string;
+  onCancelText: string;
+  isBackCancel?: boolean;
 }
 
 export const modalState = atom<ModalStateType>({
@@ -14,6 +17,9 @@ export const modalState = atom<ModalStateType>({
     isOpen: false,
     children: <></>,
     isBackdrop: true,
-    isCancelButton: true,
+    onPress: () => {},
+    onPressText: '',
+    onCancelText: '',
+    isBackCancel: false,
   },
 });

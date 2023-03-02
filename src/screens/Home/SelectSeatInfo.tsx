@@ -14,11 +14,11 @@ import {
   PinchGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { backArrow, upArrow } from '~/assets/icons';
 
 import Button from '~/components/Button';
 import { modalState } from '~/recoil/atoms';
 import theme from '~/styles/color';
+import { upArrow } from '~/assets/icons';
 import { useSetRecoilState } from 'recoil';
 
 const SelectSeatInfo = () => {
@@ -169,15 +169,12 @@ const SelectSeatInfo = () => {
         onPress={() =>
           setModalOpen({
             isOpen: true,
+            onPressText: '네 맞습니다.',
+            onCancelText: '다시 입력',
+            onPress: () => {},
+            isBackCancel: true,
             children: (
-              <View
-                style={{
-                  backgroundColor: theme.color.white,
-                  borderRadius: 20,
-                  paddingVertical: 30,
-                  paddingHorizontal: 20,
-                  alignItems: 'center',
-                }}>
+              <>
                 <Text
                   style={{
                     fontSize: 20,
@@ -196,24 +193,7 @@ const SelectSeatInfo = () => {
                   }}>
                   {'서울지하철 2호선\n7236 열차 3-2 출입문 근처'}
                 </Text>
-                <Button title={'네, 맞습니다.'} />
-                <TouchableOpacity
-                  onPress={() => setModalOpen({ isOpen: false })}
-                  style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Image
-                    source={backArrow}
-                    style={{
-                      width: 16,
-                      height: 16,
-                      marginRight: 10,
-                      tintColor: theme.color.black,
-                    }}
-                  />
-                  <Text style={{ fontSize: 18, color: theme.color.black }}>
-                    다시입력
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              </>
             ),
           })
         }

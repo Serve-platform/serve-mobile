@@ -15,11 +15,15 @@ const App = () => {
       </NavigationContainer>
       {modalOpen && (
         <DefaultModal
+          onPress={modalOpen.onPress}
+          onPressText={modalOpen.onPressText}
+          onCancelText={modalOpen.onCancelText}
           children={modalOpen.children}
           modalOpen={modalOpen.isOpen}
           setModalOpen={(isModalOpen: boolean) =>
             setModalOpen({ ...modalOpen, isOpen: isModalOpen })
           }
+          isBackCancel={modalOpen.isBackCancel}
         />
       )}
     </>
