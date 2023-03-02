@@ -260,6 +260,7 @@ const Home = () => {
         onPress={onAdvertise}
         isOn={onServe}
         setIsOn={(serve: boolean) => setOnServe(serve)}
+        type={'serve'}
       />
     </View>
   );

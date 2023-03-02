@@ -15,6 +15,8 @@ import BoardingInfo from '~/screens/Home/BoardingInfo';
 import theme from '~/styles/color';
 import { close } from '~/assets/icons';
 import { useNavigation } from '@react-navigation/native';
+import ConfirmDeal from '@screens/Find/ConfirmDeal';
+import ConfirmDealByPassword from '@screens/Find/ConfirmDealByPassword';
 
 export type GlobalStackParamList = {
   SignUp: undefined;
@@ -23,6 +25,8 @@ export type GlobalStackParamList = {
   QrScan: undefined;
   TransferModal: undefined;
   BoardingInfo: undefined;
+  ConfirmDeal: undefined;
+  ConfirmDealByPassword: undefined;
 };
 
 export type SignUpProps = NativeStackScreenProps<
@@ -44,6 +48,15 @@ export type BoardingInfoProps = StackNavigationProp<
   GlobalStackParamList,
   'BoardingInfo'
 >;
+export type ConfirmDealProps = StackNavigationProp<
+  GlobalStackParamList,
+  'ConfirmDeal'
+>;
+export type ConfirmDealByPasswordProps = StackNavigationProp<
+  GlobalStackParamList,
+  'ConfirmDealByPassword'
+>;
+
 export type QrScreenProps = NativeStackScreenProps<
   GlobalStackParamList,
   'QrScreen'
@@ -61,6 +74,9 @@ const Stack = createStackNavigator<GlobalStackParamList>();
 
 const GlobalNav = () => {
   const navigation = useNavigation<BoardingInfoProps>();
+  const navigationConfirmDeal = useNavigation<ConfirmDealProps>();
+  const navigationConfirmDealByPassword =
+    useNavigation<ConfirmDealByPasswordProps>();
 
   return (
     <>
@@ -136,6 +152,52 @@ const GlobalNav = () => {
           options={{
             headerShown: false,
           }}
+        />
+        <Stack.Screen
+          name="ConfirmDeal"
+          options={{
+            headerTitle: '거래하기',
+            headerLeft: () => (
+              <TouchableOpacity
+                hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+                style={{ marginLeft: 30 }}
+                onPress={() => {
+                  navigationConfirmDeal.goBack();
+                }}>
+                <Image
+                  style={{
+                    width: 16,
+                    height: 16,
+                  }}
+                  source={close}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+          component={ConfirmDeal}
+        />
+        <Stack.Screen
+          name="ConfirmDealByPassword"
+          options={{
+            headerTitle: '거래하기',
+            headerLeft: () => (
+              <TouchableOpacity
+                hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+                style={{ marginLeft: 30 }}
+                onPress={() => {
+                  navigationConfirmDealByPassword.goBack();
+                }}>
+                <Image
+                  style={{
+                    width: 16,
+                    height: 16,
+                  }}
+                  source={close}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+          component={ConfirmDealByPassword}
         />
       </Stack.Navigator>
     </>

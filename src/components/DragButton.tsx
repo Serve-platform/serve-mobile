@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ViewStyle,
 } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 
@@ -17,10 +18,19 @@ interface DragButtonPropType {
   onPress: () => void;
   isOn: boolean;
   setIsOn: (serve: boolean) => void;
+  type: 'serve' | 'find';
+  style?: ViewStyle;
 }
 
-const DragButton = ({ onPress, isOn, setIsOn }: DragButtonPropType) => {
+const DragButton = ({
+  onPress,
+  isOn,
+  setIsOn,
+  type,
+  style,
+}: DragButtonPropType) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
+  const typeUpperCase = type.toUpperCase();
 
   const moveOn = () => {
     Animated.timing(moveAnim, {
@@ -49,7 +59,7 @@ const DragButton = ({ onPress, isOn, setIsOn }: DragButtonPropType) => {
   }, [isOn]);
 
   return (
-    <View style={styles.dragContainer}>
+    <View style={[styles.dragContainer, style]}>
       <>
         <Pressable
           onPress={() => {
@@ -72,7 +82,7 @@ const DragButton = ({ onPress, isOn, setIsOn }: DragButtonPropType) => {
                   color: isOn ? theme.color.black : theme.color.main,
                 },
               ]}>
-              {isOn ? 'On SERVE' : 'Off SERVE'}
+              {isOn ? `On ${typeUpperCase}` : `Off ${typeUpperCase}`}
             </Text>
           </Animated.View>
         </Pressable>
@@ -90,7 +100,7 @@ const DragButton = ({ onPress, isOn, setIsOn }: DragButtonPropType) => {
           }}
         />
         <View style={[styles.dragDisableButton, { bottom: -2, left: -2 }]}>
-          <Text style={styles.dragDisableText}>Drag to SERVE</Text>
+          <Text style={styles.dragDisableText}>Drag to {typeUpperCase}</Text>
         </View>
       </>
     </View>
