@@ -14,6 +14,8 @@ import home from './home.png';
 import my from './my.png';
 import remove from './remove.png';
 import upArrow from './upArrow.png';
+import railroad from './railroad.png';
+import train from './train.png';
 
 export {
   home,
@@ -31,5 +33,7 @@ export {
   close,
   remove,
   backArrow,
-  upArrow
+  upArrow,
+  railroad,
+  train,
 };
