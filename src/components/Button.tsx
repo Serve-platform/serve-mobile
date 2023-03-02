@@ -5,11 +5,18 @@ import theme from '~/styles/color';
 
 type Props = {
   title: string;
-  clickEvent?: () => void;
+  disabled?: boolean;
+  onPress?: () => void;
   style?: ViewStyle;
   type?: 'default' | 'small' | 'yellow' | 'white';
 };
-const Button = ({ title, clickEvent, style, type = 'default' }: Props) => {
+const Button = ({
+  disabled,
+  title,
+  onPress,
+  style,
+  type = 'default',
+}: Props) => {
   const button = () => {
     switch (type) {
       case 'small':
@@ -19,12 +26,26 @@ const Button = ({ title, clickEvent, style, type = 'default' }: Props) => {
       case 'white':
         return <Text style={styles.white}>{title}</Text>;
       default:
-        return <Text style={styles.default}>{title}</Text>;
+        return (
+          <Text
+            style={[
+              styles.default,
+              {
+                borderColor: disabled ? theme.color.disable : theme.color.white,
+                color: disabled ? theme.color.disable : theme.color.white,
+              },
+            ]}>
+            {title}
+          </Text>
+        );
     }
   };
 
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={clickEvent}>
+    <TouchableOpacity
+      disabled={disabled}
+      style={[styles.container, style]}
+      onPress={onPress}>
       {button()}
     </TouchableOpacity>
   );
@@ -36,8 +57,6 @@ const styles = StyleSheet.create({
   container: {},
   default: {
     fontSize: 20,
-    color: theme.color.white,
-    borderColor: theme.color.white,
     borderWidth: 1,
     borderStyle: 'solid',
     borderRadius: 50,

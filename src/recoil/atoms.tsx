@@ -3,7 +3,7 @@ import { atom } from 'recoil';
 
 interface ModalStateType {
   isOpen: boolean;
-  children: JSX.Element;
+  children?: JSX.Element;
   isBackdrop?: boolean;
   isCancelButton?: boolean;
 }

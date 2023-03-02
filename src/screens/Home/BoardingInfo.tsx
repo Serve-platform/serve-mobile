@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { BoardingInfoProps } from '~/navigators/GlobalNav';
 import Button from '~/components/Button';
 import Input from '~/components/Input';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Label from '~/components/Label';
 import theme from '~/styles/color';
+import { useNavigation } from '@react-navigation/native';
 
 const BoardingInfo = () => {
+  const navigation = useNavigation<BoardingInfoProps>();
   const [location, setLocation] = useState('서울특별시');
   const [line, setLine] = useState('2호선');
   const [trainNumber, setTrainNumber] = useState('12345');
@@ -48,7 +51,10 @@ const BoardingInfo = () => {
           />
         </View>
         <View style={styles.button}>
-          <Button title={`다음으로`} />
+          <Button
+            onPress={() => navigation.navigate('SelectSeatInfo')}
+            title={`다음으로`}
+          />
         </View>
       </View>
     </KeyboardAwareScrollView>

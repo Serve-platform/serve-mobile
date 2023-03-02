@@ -1,22 +1,24 @@
-import { Image, Platform, TouchableOpacity } from 'react-native';
-import React from 'react';
 import {
-  createStackNavigator,
   CardStyleInterpolators,
   StackNavigationProp,
+  createStackNavigator,
 } from '@react-navigation/stack';
-import TabNavigator from '~/navigators/TabNav';
-import SignUp from '~/screens/onBoard/SignUp';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import QrScreen from '~/screens/QrScreen';
-import QrScan from '~/screens/QrScan';
-import TransferModal from '~/screens/TransferModal';
+import { Image, Platform, TouchableOpacity } from 'react-native';
+import { backArrow, close } from '~/assets/icons';
+
 import BoardingInfo from '~/screens/Home/BoardingInfo';
-import theme from '~/styles/color';
-import { close } from '~/assets/icons';
-import { useNavigation } from '@react-navigation/native';
 import ConfirmDeal from '@screens/Find/ConfirmDeal';
 import ConfirmDealByPassword from '@screens/Find/ConfirmDealByPassword';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import QrScan from '~/screens/QrScan';
+import QrScreen from '~/screens/QrScreen';
+import React from 'react';
+import SelectSeatInfo from '~/screens/Home/SelectSeatInfo';
+import SignUp from '~/screens/onBoard/SignUp';
+import TabNavigator from '~/navigators/TabNav';
+import TransferModal from '~/screens/TransferModal';
+import theme from '~/styles/color';
+import { useNavigation } from '@react-navigation/native';
 
 export type GlobalStackParamList = {
   SignUp: undefined;
@@ -27,6 +29,7 @@ export type GlobalStackParamList = {
   BoardingInfo: undefined;
   ConfirmDeal: undefined;
   ConfirmDealByPassword: undefined;
+  SelectSeatInfo: undefined;
 };
 
 export type SignUpProps = NativeStackScreenProps<
@@ -88,7 +91,11 @@ const GlobalNav = () => {
             backgroundColor: theme.color.black,
           },
           cardStyle: { backgroundColor: theme.color.black },
-          headerTitleStyle: { color: theme.color.white, fontWeight: '900' },
+          headerTitleStyle: {
+            fontSize: 16,
+            color: theme.color.white,
+            fontWeight: '900',
+          },
           cardStyleInterpolator:
             Platform.OS === 'android'
               ? CardStyleInterpolators.forFadeFromBottomAndroid
@@ -116,10 +123,7 @@ const GlobalNav = () => {
               <TouchableOpacity
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
                 style={{ marginLeft: 30 }}
-                onPress={() => {
-                  navigation.goBack();
-                  console.log('close');
-                }}>
+                onPress={() => navigation.goBack()}>
                 <Image
                   style={{
                     width: 16,
@@ -131,6 +135,27 @@ const GlobalNav = () => {
             ),
           }}
           component={BoardingInfo}
+        />
+        <Stack.Screen
+          name="SelectSeatInfo"
+          options={{
+            headerTitle: '탑승정보 입력',
+            headerLeft: () => (
+              <TouchableOpacity
+                hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
+                style={{ marginLeft: 30 }}
+                onPress={() => navigation.goBack()}>
+                <Image
+                  style={{
+                    width: 16,
+                    height: 16,
+                  }}
+                  source={backArrow}
+                />
+              </TouchableOpacity>
+            ),
+          }}
+          component={SelectSeatInfo}
         />
         <Stack.Screen
           name="QrScreen"
