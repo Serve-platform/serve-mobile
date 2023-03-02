@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { StyleSheet, Text, ScrollView, View } from 'react-native';
 import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  View,
-} from 'react-native';
-import { FindProps } from '~/navigators/stackNav/FindStacknav';
+  FindProps,
+  FindStackNavProps,
+} from '@navigators/stackNav/FindStacknav';
 import useBluetooth from '~/hooks/useBluetooth';
 import { UserProp } from '~/types/users';
 import theme from '@styles/color';
-import Button from '~/components/Button';
+import Button from '@components/Button';
+import DragButton from '@components/DragButton';
+import { useNavigation } from '@react-navigation/native';
 
-const Find = ({}: FindProps) => {
+const Index = ({}: FindProps) => {
+  const navigation = useNavigation<FindStackNavProps>();
   const { foundUsers, onGetUsersForScanStart, onScanStop } = useBluetooth();
+  const [onFind, setOnFind] = useState(false);
+
+  const toggleFind = async () =>
+    onFind ? onScanStop() : onGetUsersForScanStart();
+
+  // navigation.navigate('ConfirmDeal');
 
   return (
     <View>
@@ -39,31 +45,19 @@ const Find = ({}: FindProps) => {
           ))}
         </ScrollView>
       ) : (
-        // TODO 공통 컴포넌트 사용
-        <View>
-          <TouchableOpacity
-            style={{
-              height: 50,
-              backgroundColor: 'skyblue',
-            }}
-            onPress={onGetUsersForScanStart}>
-            <Text style={{ textAlign: 'center' }}>onScanStart</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              height: 150,
-              backgroundColor: 'skyblue',
-            }}
-            onPress={onScanStop}>
-            <Text style={{ textAlign: 'center' }}>onScanStop</Text>
-          </TouchableOpacity>
-        </View>
+        <DragButton
+          onPress={toggleFind}
+          isOn={onFind}
+          setIsOn={(is: boolean) => setOnFind(is)}
+          type={'find'}
+          style={styles.dragButton}
+        />
       )}
     </View>
   );
 };
 
-export default Find;
+export default Index;
 
 const styles = StyleSheet.create({
   container: {
@@ -94,5 +88,8 @@ const styles = StyleSheet.create({
   transArr: {
     fontSize: 14,
     color: theme.color.white,
+  },
+  dragButton: {
+    marginTop: 200,
   },
 });

@@ -11,6 +11,7 @@ import blankMy from './blankMy.png';
 import downArrow from './downArrow.png';
 import avatar from './avatar.png';
 import close from './close.png';
+import remove from './remove.png';
 
 export {
   home,
@@ -26,4 +27,5 @@ export {
   downArrow,
   avatar,
   close,
+  remove,
 };

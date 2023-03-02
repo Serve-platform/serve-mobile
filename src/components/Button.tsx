@@ -24,9 +24,7 @@ const Button = ({ title, clickEvent, style, type = 'default' }: Props) => {
   };
 
   return (
-    <TouchableOpacity
-      style={[styles.container, style]}
-      onPress={() => (clickEvent ? clickEvent : null)}>
+    <TouchableOpacity style={[styles.container, style]} onPress={clickEvent}>
       {button()}
     </TouchableOpacity>
   );
