@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import theme from '~/styles/color';
-import Label from '~/components/Label';
-import Input from '~/components/Input';
+import { StyleSheet, Text, View } from 'react-native';
+
 import Button from '~/components/Button';
+import Input from '~/components/Input';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Label from '~/components/Label';
+import theme from '~/styles/color';
 
 const BoardingInfo = () => {
   const [location, setLocation] = useState('서울특별시');
@@ -31,12 +32,20 @@ const BoardingInfo = () => {
 
         <Label title={`열차고유번호`} isValidate={true} hasDescription={true} />
         <View style={styles.wrapper}>
-          <Input value={trainNumber} setValue={setTrainNumber} />
+          <Input
+            keyboardType={'number-pad'}
+            value={trainNumber}
+            setValue={setTrainNumber}
+          />
         </View>
 
         <Label title={`출입문 번호`} />
         <View style={styles.wrapper}>
-          <Input value={doorNumber} setValue={setDoorNumber} />
+          <Input
+            keyboardType={'number-pad'}
+            value={doorNumber}
+            setValue={setDoorNumber}
+          />
         </View>
         <View style={styles.button}>
           <Button title={`다음으로`} />

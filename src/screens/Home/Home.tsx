@@ -13,6 +13,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { avatar, downArrow } from '~/assets/icons';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DragButton from '~/components/DragButton';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
 import TextTicker from 'react-native-text-ticker';
 import { getQrSvg } from '~/api';
@@ -30,7 +31,7 @@ const Home = () => {
   const [onServe, setOnServe] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [onModalVisible, setOnModalVisible] = useState(false);
-  const moveAnim = useRef(new Animated.Value(-2)).current;
+
   const [qrData, setQrData] = useState('');
   const [nickName, setNickName] = useState('');
 
@@ -142,34 +143,12 @@ const Home = () => {
       isOpen: true,
     });
 
-    const currentServeState = !onServe;
-
-    setOnServe(currentServeState);
-
-    if (currentServeState) {
+    if (!onServe) {
       const uuid = await AsyncStorage.getItem('uuid');
       uuid && onAdvertiseStart(uuid);
     } else {
       onAdvertiseStop();
     }
-  };
-
-  const moveOn = () => {
-    Animated.timing(moveAnim, {
-      toValue: 92,
-      duration: 150,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const moveOff = () => {
-    Animated.timing(moveAnim, {
-      toValue: -2,
-      duration: 150,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start();
   };
 
   const getNickName = async () => {
@@ -180,14 +159,6 @@ const Home = () => {
   useEffect(() => {
     getNickName().then();
   }, []);
-
-  useEffect(() => {
-    if (onServe) {
-      moveOn();
-    } else {
-      moveOff();
-    }
-  }, [onServe]);
 
   return (
     <View style={styles.container}>
@@ -285,50 +256,11 @@ const Home = () => {
         )}
       </Pressable>
 
-      {/* SERVE 드래그 버튼 */}
-      <View style={styles.dragContainer}>
-        <>
-          <Pressable onPress={onAdvertise}>
-            <Animated.View
-              style={[
-                styles.dragEnableButton,
-                {
-                  left: -2,
-                  backgroundColor: onServe
-                    ? theme.color.main
-                    : theme.color.black,
-                  transform: [{ translateY: moveAnim }],
-                },
-              ]}>
-              <Text
-                style={[
-                  styles.dragEnableText,
-                  {
-                    color: onServe ? theme.color.black : theme.color.main,
-                  },
-                ]}>
-                {onServe ? 'On SERVE' : 'Off SERVE'}
-              </Text>
-            </Animated.View>
-          </Pressable>
-          <View style={[styles.dragDisableButton, { top: -2, left: -2 }]}>
-            <Text style={styles.dragDisableText}>Drag to cancel</Text>
-          </View>
-          <Image
-            source={downArrow}
-            style={{
-              width: 24,
-              height: 24,
-              zIndex: -1,
-              alignSelf: 'center',
-              transform: [{ rotate: onServe ? '180deg' : '0deg' }],
-            }}
-          />
-          <View style={[styles.dragDisableButton, { bottom: -2, left: -2 }]}>
-            <Text style={styles.dragDisableText}>Drag to SERVE</Text>
-          </View>
-        </>
-      </View>
+      <DragButton
+        onPress={onAdvertise}
+        isOn={onServe}
+        setIsOn={(serve: boolean) => setOnServe(serve)}
+      />
     </View>
   );
 };
@@ -351,44 +283,5 @@ const styles = StyleSheet.create({
     borderColor: theme.color.grayscale.D9D9D9,
     paddingVertical: 18,
     alignItems: 'center',
-  },
-  dragContainer: {
-    alignSelf: 'center',
-    width: Dimensions.get('window').width - 90,
-    height: 164,
-    borderRadius: 30,
-    borderWidth: 2,
-    borderColor: theme.color.main,
-    borderStyle: 'dashed',
-    marginTop: 'auto',
-    marginBottom: 'auto',
-  },
-  dragEnableButton: {
-    width: Dimensions.get('window').width - 90,
-    borderWidth: 2,
-    borderColor: theme.color.main,
-    alignItems: 'center',
-    borderRadius: 50,
-    paddingVertical: 15,
-  },
-  dragDisableButton: {
-    position: 'absolute',
-    width: Dimensions.get('window').width - 90,
-    borderWidth: 2,
-    borderColor: 'rgba(239, 255, 55, 0.3)',
-    alignItems: 'center',
-    borderRadius: 50,
-    paddingVertical: 15,
-    borderStyle: 'dashed',
-    zIndex: -1,
-  },
-  dragEnableText: {
-    fontSize: 26,
-    fontWeight: '700',
-  },
-  dragDisableText: {
-    color: 'rgba(239, 255, 55, 0.3)',
-    fontSize: 26,
-    fontWeight: '700',
   },
 });

@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, TextInput, ViewStyle } from 'react-native';
+import {
+  KeyboardTypeOptions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ViewStyle,
+} from 'react-native';
+
 import React from 'react';
 import theme from '~/styles/color';
 
@@ -7,14 +15,22 @@ type Props = {
   setValue?: (v: string) => void;
   disabled?: boolean;
   style?: ViewStyle;
+  keyboardType?: KeyboardTypeOptions;
 };
-const Input = ({ value, setValue, disabled = false, style }: Props) => {
+const Input = ({
+  value,
+  setValue,
+  disabled = false,
+  style,
+  keyboardType,
+}: Props) => {
   return (
     <View style={[styles.container, style]}>
       {disabled ? (
         <Text style={styles.disabled}>{value}</Text>
       ) : (
         <TextInput
+          keyboardType={keyboardType}
           defaultValue={value?.toString()}
           onChangeText={v => (setValue ? setValue(v) : null)}
           style={styles.input}
