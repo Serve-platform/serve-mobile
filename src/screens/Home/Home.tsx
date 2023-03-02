@@ -14,8 +14,6 @@ import { avatar, downArrow } from '~/assets/icons';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
-import OffModal from '~/components/Home/OffModal';
-import OnModal from '~/components/Home/OnModal';
 import TextTicker from 'react-native-text-ticker';
 import { getQrSvg } from '~/api';
 import { modalState } from '~/recoil/atoms';
@@ -34,7 +32,7 @@ const Home = () => {
   const [onModalVisible, setOnModalVisible] = useState(false);
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const [qrData, setQrData] = useState('');
-  const [nickName, setNickName] = useState(null);
+  const [nickName, setNickName] = useState('');
 
   const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
 
@@ -52,7 +50,6 @@ const Home = () => {
 
       if (address) {
         const result = await getQrSvg({
-          // token,
           address,
           balance,
         });
@@ -176,8 +173,7 @@ const Home = () => {
   };
 
   const getNickName = async () => {
-    const nickName = await AsyncStorage.getItem('nickName');
-    // @ts-ignore
+    const nickName = (await AsyncStorage.getItem('nickName')) || '';
     setNickName(nickName);
   };
 

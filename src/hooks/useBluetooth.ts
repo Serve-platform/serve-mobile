@@ -6,9 +6,10 @@ import {
   scanStart,
   scanStop,
 } from 'react-native-ble-phone-to-phone';
-import { useEffect, useState } from 'react';
-import { UserProp } from '~/types/users';
 import { getTradeUser, getUsers } from '~/api';
+import { useEffect, useState } from 'react';
+
+import { UserProp } from '~/types/users';
 import { useMutation } from 'react-query';
 
 const useBluetooth = () => {

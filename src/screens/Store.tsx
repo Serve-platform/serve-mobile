@@ -1,20 +1,15 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+
+import Button from '~/components/Button';
 import React from 'react';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
 import theme from '@styles/color';
-import Button from '~/components/Button';
 
 const Store = ({}: StoreProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <View style={styles.image}></View>
+        <View style={styles.image} />
         <View style={styles.wallet}>
           <Button title={`내 지갑 정보`} type={`white`} />
         </View>
@@ -34,8 +29,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    // justifyContent: 'center',
-    // alignItems: 'center'
   },
   wrapper: {
     marginTop: 140,
@@ -52,7 +45,6 @@ const styles = StyleSheet.create({
   image: {
     position: 'absolute',
     top: -110,
-    left: 80,
     width: 200,
     height: 200,
     backgroundColor: theme.color.black,
@@ -60,16 +52,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 100,
     marginBottom: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     color: theme.color.black,
   },
   wallet: {
     position: 'absolute',
-    backgroundColor: theme.color.white,
     top: -150,
-    left: 80,
     width: 200,
     marginTop: 200,
   },

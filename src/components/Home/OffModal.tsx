@@ -1,5 +1,6 @@
-import { View, Text, Modal, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { Image, Modal, Text, TouchableOpacity, View } from 'react-native';
+
+import React from 'react';
 import { avatar } from '~/assets/icons';
 
 interface OffModalProps {

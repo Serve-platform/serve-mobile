@@ -1,5 +1,6 @@
-import { View, StyleSheet } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+
 import { CameraScreen } from 'react-native-camera-kit';
 import { QrScanProps } from '~/navigators/GlobalNav';
 
