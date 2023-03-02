@@ -11,10 +11,11 @@ import { useNavigation } from '@react-navigation/native';
 
 const BoardingInfo = () => {
   const navigation = useNavigation<BoardingInfoProps>();
-  const [location, setLocation] = useState('서울특별시');
-  const [line, setLine] = useState('2호선');
-  const [trainNumber, setTrainNumber] = useState('12345');
-  const [doorNumber, setDoorNumber] = useState('6789');
+  // 탑승정보 임시 고정 (trainId: 1)
+  const [location, setLocation] = useState('서울');
+  const [line, setLine] = useState('구남규호선');
+  const [trainNumber, setTrainNumber] = useState('1st');
+  const [doorNumber, setDoorNumber] = useState('1');
   return (
     <KeyboardAwareScrollView style={styles.container}>
       <Text style={styles.title}>
