@@ -86,8 +86,14 @@ const Home = () => {
             onCancelText: '거절',
             children: (
               <View>
-                <Text style={{ color: theme.color.black }}>
-                  {data.nickName}
+                <Text
+                  style={{
+                    color: theme.color.black,
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  {data.bookUser.nickName}
                 </Text>
                 <Text>의 양보요청</Text>
               </View>
