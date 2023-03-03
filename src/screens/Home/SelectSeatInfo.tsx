@@ -16,13 +16,17 @@ import {
 import React, { useState } from 'react';
 
 import Button from '~/components/Button';
+import SeatButton from '~/components/SeatButton';
+import SeatSelector from '~/components/SeatSelector';
 import { modalState } from '~/recoil/atoms';
 import theme from '~/styles/color';
 import { upArrow } from '~/assets/icons';
-import { useSetRecoilState } from 'recoil';
+import { useNavigation } from '@react-navigation/native';
+import { useRecoilState } from 'recoil';
 
 const SelectSeatInfo = () => {
-  const setModalOpen = useSetRecoilState(modalState);
+  const navigation = useNavigation();
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const scaleAni = new Animated.Value(1);
   const N = 27;
   let seatButtonLeft: boolean[];
@@ -171,7 +175,12 @@ const SelectSeatInfo = () => {
             isOpen: true,
             onPressText: '네 맞습니다.',
             onCancelText: '다시 입력',
-            onPress: () => {},
+            onPress: () => {
+              // todo recoil로 상태넘겨주기
+              setModalOpen({ ...modalOpen, isOpen: false });
+              navigation.goBack();
+              navigation.goBack();
+            },
             isBackCancel: true,
             children: (
               <>
@@ -193,6 +202,7 @@ const SelectSeatInfo = () => {
                   }}>
                   {'서울지하철 2호선\n7236 열차 3-2 출입문 근처'}
                 </Text>
+                <SeatSelector />
               </>
             ),
           })
@@ -204,49 +214,6 @@ const SelectSeatInfo = () => {
         title={'선택완료'}
       />
     </View>
-  );
-};
-
-interface SeatButtonPropType {
-  buttonStyle?: ViewStyle;
-  index: number;
-  isClick: boolean;
-  setIsClick: (index: number) => void;
-}
-const SeatButton = ({
-  isClick,
-  setIsClick,
-  buttonStyle,
-  index,
-}: SeatButtonPropType) => {
-  const disableSeatButton = () => {
-    return (
-      index === 0 ||
-      index === 1 ||
-      index === 2 ||
-      index === 24 ||
-      index === 25 ||
-      index === 26
-    );
-  };
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        setIsClick(index);
-      }}
-      disabled={disableSeatButton()}
-      style={[
-        styles.seatButton,
-        buttonStyle,
-        {
-          backgroundColor: disableSeatButton()
-            ? theme.color.disable
-            : isClick
-            ? theme.color.main
-            : theme.color.black,
-        },
-      ]}
-    />
   );
 };
 
@@ -271,11 +238,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     zIndex: 2,
-  },
-  seatButton: {
-    width: 15,
-    height: 15,
-    borderWidth: 1,
-    borderColor: theme.color.white,
   },
 });

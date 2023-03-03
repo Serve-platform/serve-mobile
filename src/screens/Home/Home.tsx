@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DragButton from '~/components/DragButton';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
-import TextTicker from 'react-native-text-ticker';
+import TextLoopTicker from '~/components/TextLoopTicker';
 import { avatar } from '~/assets/icons';
 import { getQrSvg } from '~/api';
 import { modalState } from '~/recoil/atoms';
@@ -178,20 +178,14 @@ const Home = () => {
       {/* 탑승 정보 */}
       <Pressable
         onPress={() => {
-          navigation.navigate('BoardingInfo');
-        }}
-        style={[
-          styles.boardInfo,
-          {
-            backgroundColor: onServe
-              ? theme.color.black
-              : 'rgba(245, 245, 245, 0.4)',
-          },
-        ]}>
+          onServe ? null : navigation.navigate('BoardingInfo');
+        }}>
         <View
           style={{
             position: 'absolute',
             top: -18,
+            alignSelf: 'center',
+            zIndex: 2,
             borderWidth: 1,
             borderColor: theme.color.main,
             borderRadius: 20,
@@ -204,26 +198,24 @@ const Home = () => {
           </Text>
         </View>
         {onServe ? (
-          <View
+          <TextLoopTicker
             style={{
-              width: '100%',
-              alignItems: 'center',
-            }}>
-            <TextTicker
+              backgroundColor: onServe
+                ? theme.color.black
+                : 'rgba(245, 245, 245, 0.4)',
+            }}
+            content="서울메트로 2호선 3386열차 3호칸 탑승 중adasdfsdffadfadf"
+          />
+        ) : (
+          <View style={styles.boardInfo}>
+            <Text
               style={{
                 fontSize: 20,
                 color: theme.color.white,
-              }}
-              duration={3000}
-              loop
-              bounce={false}>
-              서울메트로 2호선 3386열차 3호칸 탑승 중
-            </TextTicker>
+              }}>
+              탑승 정보 입력
+            </Text>
           </View>
-        ) : (
-          <Text style={{ fontSize: 20, color: theme.color.white }}>
-            탑승 정보 입력
-          </Text>
         )}
       </Pressable>
 

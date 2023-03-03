@@ -1,4 +1,12 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { backArrow, close } from '~/assets/icons';
 
 import Button from '~/components/Button';
@@ -14,6 +22,7 @@ interface DefaultModalProps {
   onPressText: string;
   onCancelText: string;
   isBackCancel?: boolean;
+  style?: ViewStyle;
   type?: 'normal';
 }
 
@@ -25,6 +34,7 @@ const DefaultModal = ({
   onPressText,
   onCancelText,
   isBackCancel,
+  style,
   type = 'normal',
 }: DefaultModalProps) => {
   return (
@@ -36,12 +46,12 @@ const DefaultModal = ({
       animationOut="fadeOut"
       onBackdropPress={() => setModalOpen(false)}
       onBackButtonPress={() => setModalOpen(false)}>
-      <View style={styles.container}>
+      <View style={[styles.container, style]}>
         {children}
         <Button
           onPress={onPress}
           type={'yellow'}
-          style={{ width: '100%' }}
+          style={{ width: Dimensions.get('window').width - 80 }}
           title={onPressText}
         />
         <TouchableOpacity
@@ -81,7 +91,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.color.white,
     borderRadius: 20,
     paddingVertical: 30,
-    paddingHorizontal: 20,
     alignItems: 'center',
   },
 });

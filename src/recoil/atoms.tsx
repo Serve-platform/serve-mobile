@@ -1,4 +1,5 @@
 import React from 'react';
+import { ViewStyle } from 'react-native';
 import { atom } from 'recoil';
 
 interface ModalStateType {
@@ -9,6 +10,7 @@ interface ModalStateType {
   onPressText: string;
   onCancelText: string;
   isBackCancel?: boolean;
+  style?: ViewStyle;
 }
 
 export const modalState = atom<ModalStateType>({
