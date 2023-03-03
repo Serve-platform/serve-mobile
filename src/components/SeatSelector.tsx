@@ -47,6 +47,8 @@ const SeatSelector = () => {
     }
   };
 
+  // todo 클릭된 좌석 상태를 가져와야함
+
   return (
     <ScrollView horizontal style={styles.container}>
       <View>
