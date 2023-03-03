@@ -3,19 +3,20 @@ import GlobalNav from '~/navigators/GlobalNav';
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { TransactionConfig } from 'web3-core';
 import Web3 from 'web3';
 import { modalState } from '~/recoil/atoms';
 import { seatAbi } from '@utils/abis';
 import { useRecoilState } from 'recoil';
 
-const web3 = new Web3();
+export const web3 = new Web3();
 web3.setProvider(
   // @ts-ignore
   new web3.providers.HttpProvider(
     'https://polygon-mumbai.g.alchemy.com/v2/W-XkZND8K-Mm3uW09In9Atd66Dj2j2X6',
   ),
 );
-const seatCA = '0xA6f00218efb6c0Fe4C53d01b2195e09A1E1a8523';
+export const seatCA = '0xA6f00218efb6c0Fe4C53d01b2195e09A1E1a8523';
 const zkpVerifierCA = '0xDA218c923bcA169169D4aD0576653a223a3A4E04';
 // @ts-ignore
 export const seatContract = new web3.eth.Contract(seatAbi, seatCA);
@@ -70,17 +71,18 @@ export const getSEATBalance = async (
   console.log(`SEAT Balance: ${tokenBalance}`);
   console.log(`SEAT Balance: ${Number(tokenBalance).toFixed(3)}`);
   return Number(tokenBalance).toFixed(3);
-}
-export const sendTransfer = (txConfig: TransactionConfig, privKey: string | undefined) => {
+};
+export const sendTransfer = (txConfig: TransactionConfig, privKey: string) => {
   console.log('txConfig', txConfig);
   web3.eth.accounts.signTransaction(txConfig, privKey).then(signed => {
     console.log('signed.rawTransaction', signed.rawTransaction);
     if (signed.rawTransaction != null) {
-      web3.eth.sendSignedTransaction(signed.rawTransaction)
-        .on('transactionHash', function(hash){
+      web3.eth
+        .sendSignedTransaction(signed.rawTransaction)
+        .on('transactionHash', function (hash) {
           console.log('hash', hash);
         })
-        .on('receipt', function(receipt){
+        .on('receipt', function (receipt) {
           console.log('receipt', receipt);
         })
         .on('error', console.error);
@@ -89,23 +91,35 @@ export const sendTransfer = (txConfig: TransactionConfig, privKey: string | unde
   //   .on('confirmation', function(confirmationNumber, receipt){
   //     console.log('confirmationNumber');
   //   })
-}
-export const sendTokenTransfer = (txConfig: TransactionConfig, privKey?: string) => {
+};
+export const sendTokenTransfer = (
+  txConfig: TransactionConfig,
+  privKey?: string,
+) => {
   console.log('txConfig', txConfig);
-  const data = seatContract.methods.transfer.getData(txConfig.to, txConfig.value);
+  const data = seatContract.methods.transfer.getData(
+    txConfig.to,
+    txConfig.value,
+  );
 
   console.log('data', data);
   // seatContract.methods.transfer(txConfig.to, txConfig.value)
   //   .send()
   //   .then(console.log)
   //   .catch(console.error);
-}
+};
 
-export const getGasAmountForContractCall = async (from: string | undefined, to: string, amount: string) => {
-  const gasAmount = await seatContract.methods.transfer(to, Web3.utils.toWei(`${amount}`)).estimateGas({ from: from });
+export const getGasAmountForContractCall = async (
+  from: string | undefined,
+  to: string,
+  amount: string,
+) => {
+  const gasAmount = await seatContract.methods
+    .transfer(to, Web3.utils.toWei(`${amount}`))
+    .estimateGas({ from: from });
   console.log('gasAmount', gasAmount);
   return gasAmount;
-}
+};
 const App = () => {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
 

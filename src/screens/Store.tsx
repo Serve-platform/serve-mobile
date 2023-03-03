@@ -1,20 +1,21 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { getMATICBalance, getSEATBalance, privToAccount } from '../../App';
+import {
+  getGasAmountForContractCall,
+  getMATICBalance,
+  getSEATBalance,
+  privToAccount,
+  seatCA,
+  seatContract,
+  sendTokenTransfer,
+  sendTransfer,
+  web3,
+} from '../../App';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '~/components/Button';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
 import Wallet from '@assets/images/wallet.png';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  getGasAmountForContractCall,
-  getMATICBalance,
-  getSEATBalance,
-  privToAccount, seatCA, seatContract, sendTokenTransfer,
-  sendTransfer,
-  web3
-} from "../../App";
 import theme from '@styles/color';
 
 const Store = ({}: StoreProps) => {
@@ -61,18 +62,22 @@ const Store = ({}: StoreProps) => {
       value: tokenAmountBal,
     };
 
-    const transferData = seatContract.methods.transfer(tmpTxConfig.to, tmpTxConfig.value).encodeABI();
-    seatContract.methods.transfer(tmpTxConfig.to, tmpTxConfig.value).estimateGas({
-      from: tmpTxConfig.from,
-      to: seatCA,
-    })
-      .then((gasAmount: any) => {
+    const transferData = seatContract.methods
+      .transfer(tmpTxConfig.to, tmpTxConfig.value)
+      .encodeABI();
+    seatContract.methods
+      .transfer(tmpTxConfig.to, tmpTxConfig.value)
+      .estimateGas({
+        from: tmpTxConfig.from,
+        to: seatCA,
+      })
+      .then((gasAmountProp: any) => {
         const tokenTxConfig = {
           from: account?.address,
           to: seatCA,
           value: '0x',
           chainId: 80001,
-          gas: gasAmount,
+          gas: gasAmountProp,
           data: transferData,
         };
         console.log('tokenTxConfig', tokenTxConfig);
@@ -81,11 +86,8 @@ const Store = ({}: StoreProps) => {
       .catch((error: any) => {
         console.log(error);
       });
-          setBalance(seatBal);
-  }
-
-
-
+    setBalance(seatBal);
+  };
 
   useEffect(() => {
     getPrivateKey().then();
