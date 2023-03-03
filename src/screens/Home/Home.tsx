@@ -67,6 +67,8 @@ const Home = () => {
     },
     {
       onSuccess: data => {
+        setIsWatch(false);
+        console.log(data, 'data');
         if (data.state === 2 && seatId && isWatch) {
           // if (seatId && isWatch) {
           setModalOpen({
@@ -85,6 +87,7 @@ const Home = () => {
           });
         }
       },
+      refetchInterval: 1000,
       enabled: isWatch!!,
     },
   );
