@@ -13,7 +13,12 @@ import {
   getSeatBySeatId,
   patchSeatBySeatId,
 } from '~/api';
-import { isWatchState, modalState, seatIdState } from '~/recoil/atoms';
+import {
+  boardInfoState,
+  isWatchState,
+  modalState,
+  seatIdState,
+} from '~/recoil/atoms';
 import { useMutation, useQuery } from 'react-query';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
@@ -30,9 +35,9 @@ const Home = () => {
   const navigation = useNavigation<HomeStackNavProps>();
   const setModalOpen = useSetRecoilState(modalState);
   const [isWatch, setIsWatch] = useRecoilState(isWatchState);
+  const boardInfo = useRecoilValue(boardInfoState);
   const [onServe, setOnServe] = useState(false);
   const [onModalVisible, setOnModalVisible] = useState(false);
-
   const [nickName, setNickName] = useState('');
 
   const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
@@ -46,8 +51,8 @@ const Home = () => {
 
   const patchSeatBySeatIdMutation = useMutation(
     'patchSeatBySeatId',
-    ({ seatId, state }: { seatId: number; state: StateType }) =>
-      patchSeatBySeatId(seatId, state),
+    ({ seatIdProp, state }: { seatIdProp: number; state: StateType }) =>
+      patchSeatBySeatId(seatIdProp, state),
     {
       onSuccess: () => {
         // todo qr화면으로 이동 (유저이름, 지갑 address, balance값 전송해야됨)
@@ -61,26 +66,26 @@ const Home = () => {
     async () => {
       if (seatId) {
         const res = await getSeatBySeatId(seatId);
-        console.log('> res : ', res);
         return res;
       }
     },
     {
       onSuccess: data => {
-        setIsWatch(false);
-        console.log(data, 'data');
         if (data.state === 2 && seatId && isWatch) {
-          // if (seatId && isWatch) {
           setModalOpen({
             isOpen: true,
             onPress: () => {
-              patchSeatBySeatIdMutation.mutate({ seatId: seatId, state: 3 });
+              setIsWatch(false);
+              patchSeatBySeatIdMutation.mutate({
+                seatIdProp: seatId,
+                state: 3,
+              });
             },
             onPressText: '수락하기',
             onCancelText: '거절',
             children: (
               <View>
-                <Text></Text>
+                <Text />
                 <Text>의 양보요청</Text>
               </View>
             ),
@@ -93,53 +98,6 @@ const Home = () => {
   );
 
   const onAdvertise = async () => {
-    // setModalOpen({
-    //   onPress: () => {},
-    //   onCancelText: '거절',
-    //   onPressText: '거래하기',
-    //   children: (
-    //     <>
-    //       <View style={{ alignItems: 'center' }}>
-    //         <Text
-    //           style={{
-    //             color: theme.color.black,
-    //             fontWeight: '700',
-    //             fontSize: 20,
-    //             marginTop: 20,
-    //           }}>
-    //           Nick Name
-    //         </Text>
-    //         <Text
-    //           style={{
-    //             color: theme.color.black,
-    //             fontWeight: '600',
-    //             fontSize: 14,
-    //           }}>
-    //           의 양보 요청 수락
-    //         </Text>
-    //         <Text
-    //           style={{
-    //             color: theme.color.black,
-    //             fontWeight: '600',
-    //             fontSize: 14,
-    //           }}>
-    //           ~~의 좌석으로 이동하세요
-    //         </Text>
-    //       </View>
-    //       <View style={{ position: 'absolute', bottom: 250 }}>
-    //         <Image
-    //           source={avatar}
-    //           style={{
-    //             width: 80,
-    //             height: 80,
-    //           }}
-    //         />
-    //       </View>
-    //     </>
-    //   ),
-    //   isOpen: true,
-    // });
-
     if (!onServe) {
       const uuid = await AsyncStorage.getItem('uuid');
       uuid && onAdvertiseStart(uuid);
@@ -149,8 +107,8 @@ const Home = () => {
   };
 
   const getNickName = async () => {
-    const nickName = (await AsyncStorage.getItem('nickName')) || '';
-    setNickName(nickName);
+    const nickNameState = (await AsyncStorage.getItem('nickName')) || '';
+    setNickName(nickNameState);
   };
 
   useEffect(() => {
@@ -230,7 +188,7 @@ const Home = () => {
                 ? theme.color.black
                 : 'rgba(245, 245, 245, 0.4)',
             }}
-            content="서울메트로 2호선 3386열차 3호칸 탑승 중adasdfsdffadfadf"
+            content={`${boardInfo.trainLocation}메트로 ${boardInfo.trainLine}호선 ${boardInfo.trainUuid}열차 ${boardInfo.doorNumber}호칸 탑승 중`}
           />
         ) : (
           <View style={styles.boardInfo}>

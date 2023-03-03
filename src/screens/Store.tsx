@@ -1,18 +1,21 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { getMATICBalance, getSEATBalance, privToAccount } from '../../App';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '~/components/Button';
-import React, {useEffect, useState} from 'react';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
-import theme from '@styles/color';
 import Wallet from '@assets/images/wallet.png';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {getMATICBalance, getSEATBalance, privToAccount} from "../../App";
+import theme from '@styles/color';
 
 const Store = ({}: StoreProps) => {
-  const [privateKey, setPrivateKey] = useState("")
+  const [privateKey, setPrivateKey] = useState('');
+  const [matic, setMatic] = useState('');
+  const [balance, setBalance] = useState('');
 
-  const getPrivateKey = async() => {
-    const pk = await AsyncStorage.getItem('PrivateKey')
-    setPrivateKey(pk? pk : "")
+  const getPrivateKey = async () => {
+    const pk = await AsyncStorage.getItem('PrivateKey');
+    setPrivateKey(pk ? pk : '');
     console.log('pk', pk);
     console.log('typeof pk', typeof pk);
     const account = privToAccount(pk);
@@ -20,17 +23,14 @@ const Store = ({}: StoreProps) => {
     const account1 = '0xfD71c28bb8aDe8970a6343cd255dff6899fDA1aD';
     const account2 = '0x16aA40118337FEC44e7E78C63B51DE5198E8F0dE';
     const bal = await getMATICBalance(account?.address);
+    setMatic(bal);
     const seatBal = await getSEATBalance(account?.address);
-
-  }
-
-
+    setBalance(seatBal);
+  };
 
   useEffect(() => {
-    getPrivateKey().then()
-  }, [])
-
-
+    getPrivateKey().then();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -44,10 +44,18 @@ const Store = ({}: StoreProps) => {
         <View style={styles.balance}>
           <Text style={styles.label}>잔액</Text>
           <View>
-            <Text style={styles.coins}>47205</Text>
+            <Text style={styles.coins}>{balance}</Text>
             <View style={styles.highlight} />
           </View>
-          <Text style={styles.seat}>Seat</Text>
+          <Text style={styles.seat}>MATIC</Text>
+        </View>
+
+        <View style={[styles.balance, { marginTop: 0, marginLeft: 70 }]}>
+          <View>
+            <Text style={styles.coins}>{matic}</Text>
+            <View style={styles.highlight} />
+          </View>
+          <Text style={styles.seat}>SEAT</Text>
         </View>
       </View>
 
@@ -101,7 +109,7 @@ const styles = StyleSheet.create({
     marginTop: 200,
   },
   balance: {
-    marginTop: 150,
+    marginTop: 'auto',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

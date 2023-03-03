@@ -35,3 +35,20 @@ export const isWatchState = atom<boolean>({
   key: 'isWatchState',
   default: false,
 });
+
+interface BoardInfoStateType {
+  trainUuid: string;
+  doorNumber: string;
+  trainLine: string;
+  trainLocation: string;
+}
+
+export const boardInfoState = atom<BoardInfoStateType>({
+  key: 'boardInfoState',
+  default: {
+    trainUuid: '',
+    doorNumber: '',
+    trainLine: '2',
+    trainLocation: '서울',
+  },
+});
