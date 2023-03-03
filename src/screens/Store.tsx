@@ -1,11 +1,37 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Button from '~/components/Button';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
 import theme from '@styles/color';
 import Wallet from '@assets/images/wallet.png';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {getMATICBalance, getSEATBalance, privToAccount} from "../../App";
 
 const Store = ({}: StoreProps) => {
+  const [privateKey, setPrivateKey] = useState("")
+
+  const getPrivateKey = async() => {
+    const pk = await AsyncStorage.getItem('PrivateKey')
+    setPrivateKey(pk? pk : "")
+    console.log('pk', pk);
+    console.log('typeof pk', typeof pk);
+    const account = privToAccount(pk);
+
+    const account1 = '0xfD71c28bb8aDe8970a6343cd255dff6899fDA1aD';
+    const account2 = '0x16aA40118337FEC44e7E78C63B51DE5198E8F0dE';
+    const bal = await getMATICBalance(account?.address);
+    const seatBal = await getSEATBalance(account?.address);
+
+  }
+
+
+
+  useEffect(() => {
+    getPrivateKey().then()
+  }, [])
+
+
+
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>

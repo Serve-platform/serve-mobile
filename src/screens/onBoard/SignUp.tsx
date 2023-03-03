@@ -17,7 +17,7 @@ const SignUp = ({ navigation }: SignUpProps) => {
     const wallet = Wallet.generate();
     setPrivateKey('0x' + wallet.getPrivateKey().toString('hex'));
     AsyncStorage.setItem(
-      'PricateKey',
+      'PrivateKey',
       '0x' + wallet.getPrivateKey().toString('hex'),
     );
     setAddress('0x' + wallet.getAddress().toString('hex'));
