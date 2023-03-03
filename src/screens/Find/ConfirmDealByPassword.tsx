@@ -7,20 +7,37 @@ import { remove } from '@assets/icons';
 
 const ConfirmDealByPassword = () => {
   const navigation = useNavigation<ConfirmDealByPasswordProps>();
-  const [password, setPassword] = useState('');
+  const [index, setIndex] = useState(0);
+  const [passwords, setPasswords] = useState([
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+  ]);
 
-  const putPassword = (flag: string) => {
-    setPassword(
-      flag === 'remove' ? password.slice(0, -1) : password.concat(flag),
-    );
+  const push = (number: number) => {
+    let password = [...passwords];
+    // @ts-ignore
+    password[index] = number;
+    setPasswords(password);
+    setIndex(index + 1);
+  };
+
+  const pop = () => {
+    let password = [...passwords];
+    password[index - 1] = null;
+    setPasswords(password);
+    setIndex(index - 1);
   };
 
   useEffect(() => {
-    if (password.length === 6) {
+    if (passwords[5] != null) {
       // @ts-ignore
       navigation.navigate('StoreStackNav');
     }
-  }, [password]);
+  }, [passwords]);
 
   return (
     <View style={styles.container}>
@@ -28,16 +45,18 @@ const ConfirmDealByPassword = () => {
         <Text style={styles.title}>비밀번호를 입력하세요</Text>
 
         <View style={styles.markWrapper}>
-          {Array(password.length).fill(
+          {passwords.map((password, i) => (
             <Text
+              key={i}
               style={[
                 styles.mark,
-                {
-                  backgroundColor: theme.color.white,
-                },
-              ]}></Text>,
-          )}
-          {Array(6 - password.length).fill(<Text style={styles.mark}></Text>)}
+                password != null
+                  ? {
+                      backgroundColor: theme.color.white,
+                    }
+                  : {},
+              ]}></Text>
+          ))}
         </View>
 
         <View
@@ -47,62 +66,40 @@ const ConfirmDealByPassword = () => {
             justifyContent: 'center',
             marginTop: 60,
           }}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('1')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(1)}>
             <Text style={styles.number}>1</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('2')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(2)}>
             <Text style={styles.number}>2</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('3')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(3)}>
             <Text style={styles.number}>3</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('4')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(4)}>
             <Text style={styles.number}>4</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('5')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(5)}>
             <Text style={styles.number}>5</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('6')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(6)}>
             <Text style={styles.number}>6</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('7')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(7)}>
             <Text style={styles.number}>7</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('8')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(8)}>
             <Text style={styles.number}>8</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('9')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(9)}>
             <Text style={styles.number}>9</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.noBorderButton}>
             <Text style={styles.number}></Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => putPassword('0')}>
+          <TouchableOpacity style={styles.button} onPress={() => push(0)}>
             <Text style={styles.number}>0</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.noBorderButton}
-            onPress={() => putPassword('remove')}>
+          <TouchableOpacity style={styles.noBorderButton} onPress={() => pop()}>
             <Image
               style={{
                 width: 100,
