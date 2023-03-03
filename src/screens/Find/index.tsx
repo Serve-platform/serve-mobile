@@ -5,7 +5,7 @@ import {
   FindStackNavProps,
 } from '@navigators/stackNav/FindStacknav';
 import useBluetooth from '~/hooks/useBluetooth';
-import { UserProp } from '~/types/users';
+import { UserProp } from '~/types';
 import theme from '@styles/color';
 import Button from '@components/Button';
 import DragButton from '@components/DragButton';
@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { modalState } from '~/recoil/atoms';
 import InfiniteTrain from '@components/InfiniteTrain';
+import TextLoopTicker from '@components/TextLoopTicker';
+import SeatSelector from '@components/SeatSelector';
 
 const Index = ({}: FindProps) => {
   const navigation = useNavigation<FindStackNavProps>();
@@ -22,10 +24,11 @@ const Index = ({}: FindProps) => {
   const toggleFind = async () =>
     onFind ? onScanStop() : onGetUsersForScanStart();
 
-  const [modalOpen] = useRecoilState(modalState);
-  const setModalOpen = useSetRecoilState(modalState);
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  // const [modalOpen] = useRecoilState(modalState);
+  // const setModalOpen = useSetRecoilState(modalState);
 
-  const openRequestModal = () => {
+  const openRequestModal = (item: UserProp) => {
     setModalOpen({
       isOpen: true,
       onPressText: '요청하기',
@@ -39,7 +42,7 @@ const Index = ({}: FindProps) => {
               fontWeight: '700',
               color: theme.color.black,
             }}>
-            item.nickName
+            {item.nickName}
           </Text>
           <Text
             style={{
@@ -49,16 +52,17 @@ const Index = ({}: FindProps) => {
             }}>
             3 Seat
           </Text>
-          <Text
+          <TextLoopTicker
             style={{
-              fontSize: 18,
-              color: theme.color.black,
-              textAlign: 'center',
-              lineHeight: 21,
-              marginVertical: 25,
-            }}>
-            {'서울지하철 2호선\n7236 열차 3-2 출입문 근처'}
-          </Text>
+              marginTop: 10,
+              marginBottom: 30,
+              backgroundColor: theme.color.black,
+            }}
+            content={item.transAcc}
+          />
+          <SeatSelector
+            seatId={item.seats.filter(seat => seat.state === 1)[0].id}
+          />
         </>
       ),
     });
@@ -68,13 +72,9 @@ const Index = ({}: FindProps) => {
     // setModalOpen({ ...modalOpen, isOpen: false });
     setModalOpen({
       isOpen: true,
-      onPressText: '',
       onCancelText: '취소',
-      onPress: () => {
-        return false;
-      },
       children: (
-        <View>
+        <>
           <Text
             style={{
               fontSize: 20,
@@ -92,62 +92,114 @@ const Index = ({}: FindProps) => {
             에게 양보 요청 중
           </Text>
           <InfiniteTrain />
-        </View>
+        </>
       ),
     });
   };
 
-  // navigation.navigate('ConfirmDeal');
+  const confirmDeal = () => {
+    // state 1을 2로 patch
+    setModalOpen({
+      isOpen: true,
+      onPressText: '거래하기',
+      onCancelText: '거절',
+      onPress: moveQrScan,
+      children: (
+        <>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '700',
+              color: theme.color.black,
+            }}>
+            item.nickName
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '700',
+              color: theme.color.black,
+            }}>
+            의 양보 요청 수락
+          </Text>
+          <TextLoopTicker
+            style={{
+              marginTop: 10,
+              marginBottom: 10,
+              backgroundColor: theme.color.black,
+            }}
+            content="서울메트로 2호선 3386열차 3호칸 탑승 중adasdfsdffadfadf"
+          />
+          <Text
+            style={{
+              marginBottom: 30,
+              fontSize: 14,
+              color: theme.color.black,
+            }}>
+            다정한수박의 좌석으로 이동하세요
+          </Text>
+        </>
+      ),
+    });
+  };
+
+  const moveQrScan = () => {
+    setModalOpen({ ...modalOpen, isOpen: false });
+    navigation.navigate('QrScan');
+  };
 
   return (
     <View style={styles.container}>
       <Text>Find</Text>
 
-      {/*{foundUsers.length > 0 ? (*/}
-      {/*  <ScrollView>*/}
-      {/*    {foundUsers.map((item: UserProp, i) => (*/}
-      {/*      <View key={`found-${i}-${item.nickName}`} style={styles.wrapper}>*/}
-      {/*        <View style={styles.wrapper}>*/}
-      {/*          <Text style={styles.image}>{item.image}</Text>*/}
-      {/*          <View style={styles.info}>*/}
-      {/*            <Text style={styles.nickName}>{item.nickName}</Text>*/}
-      {/*            <Text style={styles.transArr}>{item.transAcc}</Text>*/}
-      {/*          </View>*/}
-      {/*        </View>*/}
-      {/*        <Button*/}
-      {/*          title={`좌석보기 >`}*/}
-      {/*          type={`small`}*/}
-      {/*          style={{ right: 0 }}*/}
-      {/*        />*/}
-      {/*      </View>*/}
-      {/*    ))}*/}
-      {/*  </ScrollView>*/}
-      {/*) : (*/}
-      {/*  <DragButton*/}
-      {/*    onPress={toggleFind}*/}
-      {/*    isOn={onFind}*/}
-      {/*    setIsOn={(is: boolean) => setOnFind(is)}*/}
-      {/*    type={'find'}*/}
-      {/*    style={styles.dragButton}*/}
-      {/*  />*/}
-      {/*)}*/}
-      <ScrollView>
-        <View style={styles.wrapper}>
-          <View style={styles.wrapper}>
-            <Text style={styles.image}></Text>
-            <View style={styles.info}>
-              <Text style={styles.nickName}>asdfadsfa</Text>
-              <Text style={styles.transArr}>3333</Text>
+      {foundUsers.length > 0 ? (
+        <ScrollView>
+          {foundUsers.map((item: UserProp, i) => (
+            <View key={`found-${i}-${item.nickName}`} style={styles.wrapper}>
+              <View style={styles.wrapper}>
+                <Text style={styles.image}>{item.image}</Text>
+                <View style={styles.info}>
+                  <Text style={styles.nickName}>{item.nickName}</Text>
+                  <Text style={styles.transArr}>{item.transAcc}</Text>
+                </View>
+              </View>
+              {item.seats.length > 0 && (
+                <Button
+                  title={`좌석보기 >`}
+                  type={`small`}
+                  style={{ right: 0 }}
+                  onPress={() => openRequestModal(item)}
+                />
+              )}
             </View>
-          </View>
-          <Button
-            title={`좌석보기 >`}
-            type={`small`}
-            style={{ right: 0 }}
-            onPress={openRequestModal}
-          />
-        </View>
-      </ScrollView>
+          ))}
+        </ScrollView>
+      ) : (
+        <DragButton
+          onPress={toggleFind}
+          isOn={onFind}
+          setIsOn={(is: boolean) => setOnFind(is)}
+          type={'find'}
+          style={styles.dragButton}
+        />
+      )}
+      {/*<ScrollView>*/}
+      {/*  <View style={styles.wrapper}>*/}
+      {/*    <View style={styles.wrapper}>*/}
+      {/*      <Text style={styles.image}></Text>*/}
+      {/*      <View style={styles.info}>*/}
+      {/*        <Text style={styles.nickName}>asdfadsfa</Text>*/}
+      {/*        <Text style={styles.transArr}>3333</Text>*/}
+      {/*      </View>*/}
+      {/*    </View>*/}
+      {/*    <Button*/}
+      {/*      title={`좌석보기 >`}*/}
+      {/*      type={`small`}*/}
+      {/*      style={{ right: 0 }}*/}
+      {/*      onPress={openRequestModal}*/}
+      {/*    />*/}
+      {/*  </View>*/}
+      {/*</ScrollView>*/}
     </View>
   );
 };

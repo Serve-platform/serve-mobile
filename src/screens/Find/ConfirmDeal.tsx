@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Button from '~/components/Button';
 import theme from '~/styles/color';
-import { close } from '@assets/icons';
+import { close } from '~/assets/icons';
 import { useNavigation } from '@react-navigation/native';
 import { ConfirmDealProps } from '@navigators/GlobalNav';
 
@@ -23,7 +23,7 @@ const ConfirmDeal = () => {
           title={`CONFIRM`}
           type={'yellow'}
           style={styles.button}
-          clickEvent={() => navigation.navigate('ConfirmDealByPassword')}
+          onPress={() => navigation.navigate('ConfirmDealByPassword')}
         />
 
         <TouchableOpacity
@@ -37,11 +37,11 @@ const ConfirmDeal = () => {
             navigation.goBack();
           }}>
           <Image
+            source={close}
             style={{
               width: 12,
               height: 12,
             }}
-            source={close}
           />
           <Text style={styles.cancel}> 취소</Text>
         </TouchableOpacity>

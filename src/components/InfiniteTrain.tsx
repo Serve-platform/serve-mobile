@@ -61,7 +61,7 @@ export default InfiniteTrain;
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',

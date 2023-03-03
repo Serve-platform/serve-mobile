@@ -9,7 +9,7 @@ import {
 import { getTradeUser, getUsers } from '~/api';
 import { useEffect, useState } from 'react';
 
-import { UserProp } from '~/types/users';
+import { UserProp } from '~/types';
 import { useMutation } from 'react-query';
 
 const useBluetooth = () => {

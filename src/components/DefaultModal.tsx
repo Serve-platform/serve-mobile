@@ -18,8 +18,8 @@ interface DefaultModalProps {
   modalOpen: boolean;
   setModalOpen: (modalOpen: boolean) => void;
   children?: JSX.Element;
-  onPress: () => void;
-  onPressText: string;
+  onPress?: () => void;
+  onPressText?: string;
   onCancelText: string;
   isBackCancel?: boolean;
   style?: ViewStyle;
@@ -31,7 +31,7 @@ const DefaultModal = ({
   setModalOpen,
   children,
   onPress,
-  onPressText,
+  onPressText = '',
   onCancelText,
   isBackCancel,
   style,
@@ -48,12 +48,14 @@ const DefaultModal = ({
       onBackButtonPress={() => setModalOpen(false)}>
       <View style={[styles.container, style]}>
         {children}
-        <Button
-          onPress={onPress}
-          type={'yellow'}
-          style={{ width: Dimensions.get('window').width - 80 }}
-          title={onPressText}
-        />
+        {onPress && (
+          <Button
+            onPress={onPress}
+            type={'yellow'}
+            style={{ width: Dimensions.get('window').width - 80 }}
+            title={onPressText}
+          />
+        )}
         <TouchableOpacity
           onPress={() => setModalOpen(false)}
           style={{

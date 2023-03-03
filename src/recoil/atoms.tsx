@@ -6,8 +6,8 @@ interface ModalStateType {
   isOpen: boolean;
   children?: JSX.Element;
   isBackdrop?: boolean;
-  onPress: () => void;
-  onPressText: string;
+  onPress?: () => void;
+  onPressText?: string;
   onCancelText: string;
   isBackCancel?: boolean;
   style?: ViewStyle;
