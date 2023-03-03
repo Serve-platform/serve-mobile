@@ -55,8 +55,8 @@ export const getMATICBalance = async (
   }
   let balance = await web3.eth.getBalance(address);
   balance = web3.utils.fromWei(balance, 'ether');
-  console.log(`ETH Balance: ${balance}`);
-  console.log(`ETH Balance: ${Number(balance).toFixed(3)}`);
+  console.log(`MATIC Balance: ${balance}`);
+  console.log(`MATIC Balance: ${Number(balance).toFixed(3)}`);
   return Number(balance).toFixed(3);
   // await this.setState({ ETHBalance: Number(balance).toFixed(3) });
 };
@@ -72,7 +72,7 @@ export const getSEATBalance = async (
   console.log(`SEAT Balance: ${Number(tokenBalance).toFixed(3)}`);
   return Number(tokenBalance).toFixed(3);
 };
-export const sendTransfer = (txConfig: TransactionConfig, privKey: string) => {
+export const sendTransfer = (txConfig: TransactionConfig, privKey: string | undefined) => {
   console.log('txConfig', txConfig);
   web3.eth.accounts.signTransaction(txConfig, privKey).then(signed => {
     console.log('signed.rawTransaction', signed.rawTransaction);
@@ -84,15 +84,13 @@ export const sendTransfer = (txConfig: TransactionConfig, privKey: string) => {
         })
         .on('receipt', function (receipt) {
           console.log('receipt', receipt);
+          console.log('txHash', receipt.transactionHash);
         })
         .on('error', console.error);
     }
   });
-  //   .on('confirmation', function(confirmationNumber, receipt){
-  //     console.log('confirmationNumber');
-  //   })
 };
-export const sendTokenTransfer = (
+/*export const sendTokenTransfer = (
   txConfig: TransactionConfig,
   privKey?: string,
 ) => {
@@ -103,10 +101,6 @@ export const sendTokenTransfer = (
   );
 
   console.log('data', data);
-  // seatContract.methods.transfer(txConfig.to, txConfig.value)
-  //   .send()
-  //   .then(console.log)
-  //   .catch(console.error);
 };
 
 export const getGasAmountForContractCall = async (
@@ -119,7 +113,7 @@ export const getGasAmountForContractCall = async (
     .estimateGas({ from: from });
   console.log('gasAmount', gasAmount);
   return gasAmount;
-};
+};*/
 const App = () => {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
 

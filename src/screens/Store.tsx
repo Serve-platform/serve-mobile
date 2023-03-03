@@ -1,13 +1,11 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
-  getGasAmountForContractCall,
   getMATICBalance,
   getSEATBalance,
   privToAccount,
   seatCA,
   seatContract,
-  sendTokenTransfer,
   sendTransfer,
   web3,
 } from '../../App';
@@ -23,42 +21,35 @@ const Store = ({}: StoreProps) => {
   const [matic, setMatic] = useState('');
   const [balance, setBalance] = useState('');
 
-  const getPrivateKey = async () => {
+
+  const sendMaticTransfer = async (to: string, amount: string) => {
     const pk = await AsyncStorage.getItem('PrivateKey');
-    setPrivateKey(pk ? pk : '');
-    console.log('pk', pk);
-    console.log('typeof pk', typeof pk);
     const account = privToAccount(pk);
 
-    const account1 = '0xfD71c28bb8aDe8970a6343cd255dff6899fDA1aD';
-    const account2 = '0x16aA40118337FEC44e7E78C63B51DE5198E8F0dE';
-    const bal = await getMATICBalance(account?.address);
-    setMatic(bal);
-    const seatBal = await getSEATBalance(account?.address);
-
-    // sendTx
-    const amount = '0.0001';
     const amountBal = web3.utils.toWei(amount, 'ether');
     const gasAmount = await web3.eth.estimateGas({
       from: account?.address,
-      to: account1,
+      to: to,
       value: amountBal,
     });
     const txConfig = {
       from: account?.address,
-      to: account1,
+      to: to,
       value: amountBal,
       chainId: 80001,
       gas: gasAmount,
     };
     console.log('txConfig', txConfig);
-    // sendTransfer(txConfig, account?.privateKey);
+    sendTransfer(txConfig, account?.privateKey);
+  }
+  const sendSeatTransfer = async (to: string, tokenAmount: string) => {
+    const pk = await AsyncStorage.getItem('PrivateKey');
+    const account = privToAccount(pk);
 
-    const tokenAmount = '2';
     const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
     const tmpTxConfig = {
       from: account?.address,
-      to: account1,
+      to: to,
       value: tokenAmountBal,
     };
 
@@ -81,12 +72,22 @@ const Store = ({}: StoreProps) => {
           data: transferData,
         };
         console.log('tokenTxConfig', tokenTxConfig);
-        // sendTransfer(tokenTxConfig, account?.privateKey);
+        sendTransfer(tokenTxConfig, account?.privateKey);
       })
       .catch((error: any) => {
         console.log(error);
       });
+  }
+  const getPrivateKey = async () => {
+    const pk = await AsyncStorage.getItem('PrivateKey');
+    setPrivateKey(pk ? pk : '');
+    const account = privToAccount(pk);
+
+    const bal = await getMATICBalance(account?.address);
+    const seatBal = await getSEATBalance(account?.address);
+    setMatic(bal);
     setBalance(seatBal);
+
   };
 
   useEffect(() => {
