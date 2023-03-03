@@ -33,7 +33,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
   const navigation = useNavigation<HomeStackNavProps>();
-  const setModalOpen = useSetRecoilState(modalState);
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
   const [isWatch, setIsWatch] = useRecoilState(isWatchState);
   const boardInfo = useRecoilValue(boardInfoState);
   const [onServe, setOnServe] = useState(false);
@@ -62,7 +62,7 @@ const Home = () => {
   );
 
   useQuery<TrainSeatsType, Error>(
-    ['getSeatBySeatId', isWatch],
+    ['getSeatBySeatId'],
     async () => {
       if (seatId) {
         const res = await getSeatBySeatId(seatId);
@@ -76,6 +76,7 @@ const Home = () => {
             isOpen: true,
             onPress: () => {
               setIsWatch(false);
+              setModalOpen({ ...modalOpen, isOpen: false });
               patchSeatBySeatIdMutation.mutate({
                 seatIdProp: seatId,
                 state: 3,
@@ -93,7 +94,7 @@ const Home = () => {
         }
       },
       refetchInterval: 1000,
-      enabled: isWatch!!,
+      enabled: isWatch!! && onServe!!,
     },
   );
 
@@ -197,13 +198,16 @@ const Home = () => {
                 fontSize: 20,
                 color: theme.color.white,
               }}>
-              탑승 정보 입력
+              {boardInfo.trainUuid !== ''
+                ? `${boardInfo.trainLocation}메트로 ${boardInfo.trainLine}호선 ${boardInfo.trainUuid}열차 ${boardInfo.doorNumber}호칸 탑승 중`
+                : '탑승 정보 입력'}
             </Text>
           </View>
         )}
       </Pressable>
 
       <DragButton
+        disabled={boardInfo.trainUuid === ''}
         onPress={onAdvertise}
         isOn={onServe}
         setIsOn={(serve: boolean) => setOnServe(serve)}
