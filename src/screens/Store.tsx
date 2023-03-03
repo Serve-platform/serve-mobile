@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {
   getMATICBalance,
   getSEATBalance,
+  getSigData,
   privToAccount,
   seatCA,
   seatContract,
@@ -92,6 +93,7 @@ const Store = ({}: StoreProps) => {
     setBalance(seatBal);
 
     const isVerify = await zkpVerify();
+    await getSigData(account?.privateKey);
   };
 
   const generateWallet = async () => {

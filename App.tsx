@@ -6,7 +6,7 @@ import { LogBox, StyleSheet } from 'react-native';
 import { TransactionConfig } from 'web3-core';
 import Web3 from 'web3';
 import { modalState } from '~/recoil/atoms';
-import { seatAbi, zkpVerifierAbi } from '@utils/abis';
+import { seatAbi, zkpVerifierAbi, sigVerifierAbi } from '@utils/abis';
 import { useRecoilState } from 'recoil';
 
 export const web3 = new Web3();
@@ -23,30 +23,17 @@ LogBox.ignoreLogs([
 ]);
 export const seatCA = '0xA6f00218efb6c0Fe4C53d01b2195e09A1E1a8523';
 export const zkpVerifierCA = '0xDA218c923bcA169169D4aD0576653a223a3A4E04';
-// @ts-ignore
+export const sigVerifierCA = '0x563699d8798A654ec60A8F7720Fe8a0037ce69ae';
+
 export const seatContract = new web3.eth.Contract(seatAbi, seatCA);
-// @ts-ignore
 export const zkpVerifierContract = new web3.eth.Contract(
   zkpVerifierAbi,
   zkpVerifierCA,
 );
-
-/*const balanceOf = web3.eth.abi.encodeFunctionSignature({
-  "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-  "name": "balanceOf",
-  "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-  "stateMutability": "view",
-  "type": "function"
-});
-console.log('balanceOf', balanceOf);*/
-
-// const aaa = web3.eth.abi.encodeFunctionCall({
-//   "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-//   "name": "balanceOf",
-//   "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//   "stateMutability": "view",
-//   "type": "function"
-// })
+export const sigVerifierContract = new web3.eth.Contract(
+  sigVerifierAbi,
+  sigVerifierCA,
+);
 
 export const privToAccount = (privateKey: string | null) => {
   if (!privateKey) {
@@ -102,6 +89,25 @@ export const sendTransfer = (
         .on('error', console.error);
     }
   });
+};
+
+export const getSigData = async (privKey: string | undefined) => {
+  const message = 'Welcome to Serveway!/nClick to sign in and accept the Serveway Service./nThis request will not trigger a blockchain transaction or cost any gas fees.';
+  const res = web3.eth.accounts.sign(message, privKey);
+  const msgHash = res.messageHash;
+  const v = web3.utils.hexToNumber(res.v);
+  const r = res.r;
+  const s = res.s;
+  const signer = await sigVerifierContract.methods
+    .verifyString(message, v, r, s)
+    .call();
+  const account = web3.eth.accounts.privateKeyToAccount(privKey);
+  console.log('msgHash', res.messageHash);
+  console.log('v', web3.utils.hexToNumber(res.v));
+  console.log('r', res.r);
+  console.log('s', res.s);
+  console.log('account', account);
+  console.log('signer', signer);
 };
 
 export const zkpVerify = async () => {
