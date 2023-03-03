@@ -104,6 +104,20 @@ export const getTrainSeatAll = async () => {
   }
 };
 
+// ---------------------- TRAIN ----------------------//
+// 열차 정보 조회 api  (임시값 1로 고정)
+export const getTrainInfo = async () => {
+  const token = await AsyncStorage.getItem('token');
+  const res = await axios.get(`${BACKEND_URL}${TRAIN}/1`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (res) {
+    return res.data.result[0];
+  }
+};
+
 // ---------------------- SEAT ----------------------//
 // 특정 좌석 상태 조회
 export const getSeatBySeatId = async (seatId: number) => {

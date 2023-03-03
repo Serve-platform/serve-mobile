@@ -7,13 +7,26 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Label from '~/components/Label';
 import React from 'react';
 import { boardInfoState } from '~/recoil/atoms';
+import { getTrainInfo } from '~/api';
 import theme from '~/styles/color';
 import { useNavigation } from '@react-navigation/native';
+import { useQuery } from 'react-query';
 import { useRecoilState } from 'recoil';
 
 const BoardingInfo = () => {
   const navigation = useNavigation<BoardingInfoProps>();
   const [boardInfo, setBoardInfo] = useRecoilState(boardInfoState);
+
+  useQuery('getTrainInfo', getTrainInfo, {
+    onSuccess: data => {
+      setBoardInfo({
+        doorNumber: data.doorNumber,
+        trainUuid: data.trainUuid,
+        trainLocation: data.trainLocation,
+        trainLine: data.trainLine,
+      });
+    },
+  });
 
   return (
     <KeyboardAwareScrollView style={styles.container}>
