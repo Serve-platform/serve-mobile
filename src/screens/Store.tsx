@@ -16,68 +16,70 @@ import { StoreProps } from '@navigators/stackNav/StoreStackNav';
 import Wallet from '@assets/images/wallet.png';
 import theme from '@styles/color';
 
+export const sendMaticTransfer = async (to: string, amount: string) => {
+  const pk = await AsyncStorage.getItem('PrivateKey');
+  const account = privToAccount(pk);
+
+  const amountBal = web3.utils.toWei(amount, 'ether');
+  const gasAmount = await web3.eth.estimateGas({
+    from: account?.address,
+    to: to,
+    value: amountBal,
+  });
+  const txConfig = {
+    from: account?.address,
+    to: to,
+    value: amountBal,
+    chainId: 80001,
+    gas: gasAmount,
+  };
+  console.log('txConfig', txConfig);
+  sendTransfer(txConfig, account?.privateKey);
+}
+export const sendSeatTransfer = async (to: string, tokenAmount: string) => {
+  const pk = await AsyncStorage.getItem('PrivateKey');
+  const account = privToAccount(pk);
+
+  const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
+  const tmpTxConfig = {
+    from: account?.address,
+    to: to,
+    value: tokenAmountBal,
+  };
+
+  const transferData = seatContract.methods
+    .transfer(tmpTxConfig.to, tmpTxConfig.value)
+    .encodeABI();
+  seatContract.methods
+    .transfer(tmpTxConfig.to, tmpTxConfig.value)
+    .estimateGas({
+      from: tmpTxConfig.from,
+      to: seatCA,
+    })
+    .then((gasAmountProp: any) => {
+      const tokenTxConfig = {
+        from: account?.address,
+        to: seatCA,
+        value: '0x',
+        chainId: 80001,
+        gas: gasAmountProp,
+        data: transferData,
+      };
+      console.log('tokenTxConfig', tokenTxConfig);
+      sendTransfer(tokenTxConfig, account?.privateKey);
+    })
+    .catch((error: any) => {
+      console.log(error);
+    });
+}
+
 const Store = ({}: StoreProps) => {
   const [privateKey, setPrivateKey] = useState('');
   const [matic, setMatic] = useState('');
   const [balance, setBalance] = useState('');
 
 
-  const sendMaticTransfer = async (to: string, amount: string) => {
-    const pk = await AsyncStorage.getItem('PrivateKey');
-    const account = privToAccount(pk);
 
-    const amountBal = web3.utils.toWei(amount, 'ether');
-    const gasAmount = await web3.eth.estimateGas({
-      from: account?.address,
-      to: to,
-      value: amountBal,
-    });
-    const txConfig = {
-      from: account?.address,
-      to: to,
-      value: amountBal,
-      chainId: 80001,
-      gas: gasAmount,
-    };
-    console.log('txConfig', txConfig);
-    sendTransfer(txConfig, account?.privateKey);
-  }
-  const sendSeatTransfer = async (to: string, tokenAmount: string) => {
-    const pk = await AsyncStorage.getItem('PrivateKey');
-    const account = privToAccount(pk);
-
-    const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
-    const tmpTxConfig = {
-      from: account?.address,
-      to: to,
-      value: tokenAmountBal,
-    };
-
-    const transferData = seatContract.methods
-      .transfer(tmpTxConfig.to, tmpTxConfig.value)
-      .encodeABI();
-    seatContract.methods
-      .transfer(tmpTxConfig.to, tmpTxConfig.value)
-      .estimateGas({
-        from: tmpTxConfig.from,
-        to: seatCA,
-      })
-      .then((gasAmountProp: any) => {
-        const tokenTxConfig = {
-          from: account?.address,
-          to: seatCA,
-          value: '0x',
-          chainId: 80001,
-          gas: gasAmountProp,
-          data: transferData,
-        };
-        console.log('tokenTxConfig', tokenTxConfig);
-        sendTransfer(tokenTxConfig, account?.privateKey);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  }
   const getPrivateKey = async () => {
     const pk = await AsyncStorage.getItem('PrivateKey');
     setPrivateKey(pk ? pk : '');
