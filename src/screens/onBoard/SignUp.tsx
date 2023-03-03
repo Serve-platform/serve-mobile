@@ -151,7 +151,7 @@ const SignUp = ({ navigation }: SignUpProps) => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/*<TouchableOpacity
           style={{
             marginTop: 10,
             paddingVertical: 16,
@@ -181,7 +181,7 @@ const SignUp = ({ navigation }: SignUpProps) => {
             }}>
             지갑 연동하기
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
       </View>
 
       <Text style={{ color: theme.color.white }}>© Team Serve</Text>
