@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
@@ -9,34 +9,26 @@ interface SeatButtonPropType {
   buttonBackground?: string;
   index: number;
   isClick: boolean;
+  disabled?: boolean;
   setIsClick: (index: number) => void;
 }
 const SeatButton = ({
   isClick,
+  disabled,
   setIsClick,
   buttonStyle,
   index,
   buttonBackground = theme.color.black,
 }: SeatButtonPropType) => {
-  const disableSeatButton = () => {
-    return (
-      index === 0 ||
-      index === 1 ||
-      index === 2 ||
-      index === 24 ||
-      index === 25 ||
-      index === 26
-    );
-  };
   return (
     <TouchableOpacity
       onPress={() => setIsClick(index)}
-      disabled={disableSeatButton()}
+      disabled={disabled}
       style={[
         styles.seatButton,
         buttonStyle,
         {
-          backgroundColor: disableSeatButton()
+          backgroundColor: disabled
             ? theme.color.disable
             : isClick
             ? theme.color.main

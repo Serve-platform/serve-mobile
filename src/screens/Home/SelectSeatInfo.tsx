@@ -4,42 +4,45 @@ import {
   Image,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  ViewStyle,
 } from 'react-native';
+import {
+  GetTrainSeatAllType,
+  StateType,
+  TrainSeatsType,
+  getTrainSeatAll,
+  patchSeatBySeatId,
+} from '~/api';
 import {
   HandlerStateChangeEvent,
   PinchGestureHandler,
   PinchGestureHandlerEventPayload,
 } from 'react-native-gesture-handler';
 import React, { useState } from 'react';
+import { modalState, seatIdState } from '~/recoil/atoms';
+import { useMutation, useQuery } from 'react-query';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import Button from '~/components/Button';
 import SeatButton from '~/components/SeatButton';
 import SeatSelector from '~/components/SeatSelector';
-import { modalState } from '~/recoil/atoms';
 import theme from '~/styles/color';
 import { upArrow } from '~/assets/icons';
 import { useNavigation } from '@react-navigation/native';
-import { useRecoilState } from 'recoil';
 
 const SelectSeatInfo = () => {
   const navigation = useNavigation();
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const [seatId, seatSetId] = useRecoilState(seatIdState);
   const scaleAni = new Animated.Value(1);
-  const N = 27;
-  let seatButtonLeft: boolean[];
-  let setButtonRight: boolean[];
-  (seatButtonLeft = []).length = N;
-  const [seatButtonLeftState, setSeatButtonLeftState] = useState(
-    seatButtonLeft.fill(false),
-  );
 
-  (setButtonRight = []).length = N;
-  const [seatButtonRightState, setSeatButtonRightState] = useState(
-    setButtonRight.fill(false),
-  );
+  const [seatButtonLeftState, setSeatButtonLeftState] = useState<
+    TrainSeatsType[]
+  >([]);
+
+  const [seatButtonRightState, setSeatButtonRightState] = useState<
+    TrainSeatsType[]
+  >([]);
 
   const onZoomEvent = Animated.event(
     [
@@ -52,40 +55,54 @@ const SelectSeatInfo = () => {
     },
   );
 
-  const onZoomStateChange = (
-    event: HandlerStateChangeEvent<PinchGestureHandlerEventPayload>,
-  ) => {
-    // if (event.nativeEvent.oldState === State.ACTIVE) {
-    //   Animated.spring(scaleAni, {
-    //     toValue: 1,
-    //     useNativeDriver: true,
-    //   }).start();
-    // }
-  };
+  useQuery<GetTrainSeatAllType, Error>('getTrainSeatAll', getTrainSeatAll, {
+    onSuccess: data => {
+      setSeatButtonLeftState(
+        data.seats.slice(0, 27).map(e => ({ ...e, isClick: false })),
+      );
+      setSeatButtonRightState(
+        data.seats
+          .slice(27, data.seats.length)
+          .map(e => ({ ...e, isClick: false })),
+      );
+    },
+  });
+
+  const patchSeatBySeatIdMutation = useMutation(
+    'patchSeatBySeatId',
+    ({ seatId, state }: { seatId: number; state: StateType }) =>
+      patchSeatBySeatId(seatId, state),
+  );
 
   const changeButtonState = (
     direction: 'left' | 'right',
     clickIndex: number,
   ) => {
     if (direction === 'left') {
-      setSeatButtonRightState(seatButtonRightState.fill(false));
+      setSeatButtonRightState(
+        seatButtonRightState.map(e => ({ ...e, isClick: false })),
+      );
       setSeatButtonLeftState(
-        seatButtonLeftState.map((_, buttonIdx) => {
+        seatButtonLeftState.map((v, buttonIdx) => {
           if (buttonIdx === clickIndex) {
-            return true;
+            seatSetId(v.id);
+            return { ...v, isClick: true };
           }
-          return false;
+          return { ...v, isClick: false };
         }),
       );
     }
     if (direction === 'right') {
-      setSeatButtonLeftState(seatButtonLeftState.fill(false));
+      setSeatButtonLeftState(
+        seatButtonLeftState.map(e => ({ ...e, isClick: false })),
+      );
       setSeatButtonRightState(
-        seatButtonRightState.map((_, buttonIdx) => {
+        seatButtonRightState.map((v, buttonIdx) => {
           if (buttonIdx === clickIndex) {
-            return true;
+            seatSetId(v.id);
+            return { ...v, isClick: true };
           }
-          return false;
+          return { ...v, isClick: false };
         }),
       );
     }
@@ -97,7 +114,7 @@ const SelectSeatInfo = () => {
 
       <PinchGestureHandler
         onGestureEvent={onZoomEvent}
-        onHandlerStateChange={onZoomStateChange}>
+        onHandlerStateChange={() => {}}>
         <Animated.View
           style={[styles.seatWrapper, { transform: [{ scale: scaleAni }] }]}>
           <View>
@@ -107,7 +124,8 @@ const SelectSeatInfo = () => {
                   return (
                     <>
                       <SeatButton
-                        isClick={v}
+                        isClick={v.isClick}
+                        disabled={v.state != 0}
                         setIsClick={(clickIndex: number) =>
                           changeButtonState('left', clickIndex)
                         }
@@ -119,7 +137,8 @@ const SelectSeatInfo = () => {
                 }
                 return (
                   <SeatButton
-                    isClick={v}
+                    isClick={v.isClick}
+                    disabled={v.state != 0}
                     setIsClick={(clickIndex: number) =>
                       changeButtonState('left', clickIndex)
                     }
@@ -145,7 +164,8 @@ const SelectSeatInfo = () => {
                   return (
                     <>
                       <SeatButton
-                        isClick={v}
+                        isClick={v.isClick}
+                        disabled={v.state != 0}
                         setIsClick={(clickIndex: number) =>
                           changeButtonState('right', clickIndex)
                         }
@@ -157,7 +177,8 @@ const SelectSeatInfo = () => {
                 }
                 return (
                   <SeatButton
-                    isClick={v}
+                    isClick={v.isClick}
+                    disabled={v.state != 0}
                     setIsClick={(clickIndex: number) =>
                       changeButtonState('right', clickIndex)
                     }
@@ -176,7 +197,26 @@ const SelectSeatInfo = () => {
             onPressText: '네 맞습니다.',
             onCancelText: '다시 입력',
             onPress: () => {
-              // todo recoil로 상태넘겨주기
+              seatButtonLeftState.forEach(e => {
+                if (e.isClick) {
+                  seatSetId(e.state);
+                  patchSeatBySeatIdMutation.mutate({
+                    seatId: e.id,
+                    state: 1,
+                  });
+                }
+              });
+
+              seatButtonRightState.forEach(e => {
+                if (e.isClick) {
+                  seatSetId(e.state);
+                  patchSeatBySeatIdMutation.mutate({
+                    seatId: e.id,
+                    state: 1,
+                  });
+                }
+              });
+
               setModalOpen({ ...modalOpen, isOpen: false });
               navigation.goBack();
               navigation.goBack();
@@ -202,14 +242,14 @@ const SelectSeatInfo = () => {
                   }}>
                   {'서울지하철 2호선\n7236 열차 3-2 출입문 근처'}
                 </Text>
-                <SeatSelector />
+                <SeatSelector seatId={seatId} />
               </>
             ),
           })
         }
         disabled={
-          seatButtonLeftState.every(e => !e) &&
-          seatButtonRightState.every(e => !e)
+          seatButtonLeftState.every(e => !e.isClick) &&
+          seatButtonRightState.every(e => !e.isClick)
         }
         title={'선택완료'}
       />

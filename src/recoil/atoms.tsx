@@ -25,3 +25,8 @@ export const modalState = atom<ModalStateType>({
     isBackCancel: false,
   },
 });
+
+export const seatIdState = atom<number>({
+  key: 'seatIdState',
+  default: 0,
+});

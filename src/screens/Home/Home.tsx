@@ -7,20 +7,19 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { modalState, seatIdState } from '~/recoil/atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DragButton from '~/components/DragButton';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
 import TextLoopTicker from '~/components/TextLoopTicker';
-import { avatar } from '~/assets/icons';
 import { getQrSvg } from '~/api';
-import { modalState } from '~/recoil/atoms';
 import { onboarding } from '~/assets/images';
 import theme from '~/styles/color';
 import useBluetooth from '~/hooks/useBluetooth';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery } from 'react-query';
-import { useSetRecoilState } from 'recoil';
 
 const Home = () => {
   const navigation = useNavigation<HomeStackNavProps>();
@@ -33,6 +32,8 @@ const Home = () => {
   const [nickName, setNickName] = useState('');
 
   const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
+
+  const seatId = useRecoilState(seatIdState);
 
   const moveQr = () => {
     setOnModalVisible(!onModalVisible);
@@ -67,52 +68,52 @@ const Home = () => {
   };
 
   const onAdvertise = async () => {
-    setModalOpen({
-      onPress: () => {},
-      onCancelText: '거절',
-      onPressText: '거래하기',
-      children: (
-        <>
-          <View style={{ alignItems: 'center' }}>
-            <Text
-              style={{
-                color: theme.color.black,
-                fontWeight: '700',
-                fontSize: 20,
-                marginTop: 20,
-              }}>
-              Nick Name
-            </Text>
-            <Text
-              style={{
-                color: theme.color.black,
-                fontWeight: '600',
-                fontSize: 14,
-              }}>
-              의 양보 요청 수락
-            </Text>
-            <Text
-              style={{
-                color: theme.color.black,
-                fontWeight: '600',
-                fontSize: 14,
-              }}>
-              ~~의 좌석으로 이동하세요
-            </Text>
-          </View>
-          <View style={{ position: 'absolute', bottom: 250 }}>
-            <Image
-              source={avatar}
-              style={{
-                width: 80,
-                height: 80,
-              }}
-            />
-          </View>
-        </>
-      ),
-      isOpen: true,
-    });
+    // setModalOpen({
+    //   onPress: () => {},
+    //   onCancelText: '거절',
+    //   onPressText: '거래하기',
+    //   children: (
+    //     <>
+    //       <View style={{ alignItems: 'center' }}>
+    //         <Text
+    //           style={{
+    //             color: theme.color.black,
+    //             fontWeight: '700',
+    //             fontSize: 20,
+    //             marginTop: 20,
+    //           }}>
+    //           Nick Name
+    //         </Text>
+    //         <Text
+    //           style={{
+    //             color: theme.color.black,
+    //             fontWeight: '600',
+    //             fontSize: 14,
+    //           }}>
+    //           의 양보 요청 수락
+    //         </Text>
+    //         <Text
+    //           style={{
+    //             color: theme.color.black,
+    //             fontWeight: '600',
+    //             fontSize: 14,
+    //           }}>
+    //           ~~의 좌석으로 이동하세요
+    //         </Text>
+    //       </View>
+    //       <View style={{ position: 'absolute', bottom: 250 }}>
+    //         <Image
+    //           source={avatar}
+    //           style={{
+    //             width: 80,
+    //             height: 80,
+    //           }}
+    //         />
+    //       </View>
+    //     </>
+    //   ),
+    //   isOpen: true,
+    // });
 
     if (!onServe) {
       const uuid = await AsyncStorage.getItem('uuid');

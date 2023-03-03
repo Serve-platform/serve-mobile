@@ -1,53 +1,46 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import SeatButton from '~/components/SeatButton';
 import { backArrow } from '~/assets/icons';
 import theme from '~/styles/color';
 
-const SeatSelector = () => {
+const SeatSelector = ({ seatId }: { seatId: number }) => {
   const N = 27;
   let seatButtonTop: boolean[];
   let setButtonBottom: boolean[];
   (seatButtonTop = []).length = N;
+  (setButtonBottom = []).length = N;
+
   const [seatButtonTopState, setSeatButtonTopState] = useState(
     seatButtonTop.fill(false),
   );
 
-  (setButtonBottom = []).length = N;
   const [seatButtonBottomState, setSeatButtonBottomState] = useState(
     setButtonBottom.fill(false),
   );
 
-  const changeButtonState = (
-    direction: 'top' | 'bottom',
-    clickIndex: number,
-  ) => {
-    if (direction === 'top') {
-      setSeatButtonBottomState(seatButtonBottomState.fill(false));
-      setSeatButtonTopState(
-        seatButtonTopState.map((_, buttonIdx) => {
-          if (buttonIdx === clickIndex) {
-            return true;
-          }
-          return false;
-        }),
-      );
-    }
-    if (direction === 'bottom') {
-      setSeatButtonTopState(seatButtonTopState.fill(false));
-      setSeatButtonBottomState(
-        seatButtonBottomState.map((_, buttonIdx) => {
-          if (buttonIdx === clickIndex) {
-            return true;
-          }
-          return false;
-        }),
-      );
-    }
-  };
+  console.log(seatId, 'seatId');
 
-  // todo 클릭된 좌석 상태를 가져와야함
+  useEffect(() => {
+    setSeatButtonTopState(
+      seatButtonTopState.fill(false).map((_, i) => {
+        if (i + 1 === seatId) {
+          return true;
+        }
+        return false;
+      }),
+    );
+
+    setSeatButtonBottomState(
+      seatButtonBottomState.fill(false).map((_, i) => {
+        if (i + 1 === seatId - 27) {
+          return true;
+        }
+        return false;
+      }),
+    );
+  }, [seatId]);
 
   return (
     <ScrollView horizontal style={styles.container}>
@@ -62,9 +55,7 @@ const SeatSelector = () => {
                       buttonBackground={theme.color.white}
                       buttonStyle={{ borderColor: theme.color.black }}
                       isClick={v}
-                      setIsClick={(clickIndex: number) =>
-                        changeButtonState('top', clickIndex)
-                      }
+                      setIsClick={() => {}}
                       index={i}
                     />
                     <View style={{ marginRight: 10 }} />
@@ -76,9 +67,7 @@ const SeatSelector = () => {
                   buttonBackground={theme.color.white}
                   buttonStyle={{ borderColor: theme.color.black }}
                   isClick={v}
-                  setIsClick={(clickIndex: number) =>
-                    changeButtonState('top', clickIndex)
-                  }
+                  setIsClick={() => {}}
                   index={i}
                 />
               );
@@ -120,9 +109,7 @@ const SeatSelector = () => {
                       buttonBackground={theme.color.white}
                       buttonStyle={{ borderColor: theme.color.black }}
                       isClick={v}
-                      setIsClick={(clickIndex: number) =>
-                        changeButtonState('bottom', clickIndex)
-                      }
+                      setIsClick={() => {}}
                       index={i}
                     />
                     <View style={{ marginRight: 10 }} />
@@ -134,9 +121,7 @@ const SeatSelector = () => {
                   buttonBackground={theme.color.white}
                   buttonStyle={{ borderColor: theme.color.black }}
                   isClick={v}
-                  setIsClick={(clickIndex: number) =>
-                    changeButtonState('bottom', clickIndex)
-                  }
+                  setIsClick={() => {}}
                   index={i}
                 />
               );
