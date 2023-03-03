@@ -176,9 +176,9 @@ const Home = () => {
   };
 
   const getNickName = async () => {
-    const nickName = await AsyncStorage.getItem('nickName');
+    const nickName_ = await AsyncStorage.getItem('nickName');
     // @ts-ignore
-    setNickName(nickName);
+    setNickName(nickName_);
   };
 
   useEffect(() => {
