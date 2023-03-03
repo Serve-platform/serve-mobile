@@ -20,6 +20,7 @@ const App = () => {
           onCancelText={modalOpen.onCancelText}
           children={modalOpen.children}
           modalOpen={modalOpen.isOpen}
+          style={modalOpen.style}
           setModalOpen={(isModalOpen: boolean) =>
             setModalOpen({ ...modalOpen, isOpen: isModalOpen })
           }
