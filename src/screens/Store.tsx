@@ -4,17 +4,17 @@ import {
   getMATICBalance,
   getSEATBalance,
   privToAccount,
-  seatCA,
-  seatContract,
-  web3,
+  getSigData,
+  zkpVerify,
 } from '../../App';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '~/components/Button';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
-import Wallet from '@assets/images/wallet.png';
+import WalletImage from '@assets/images/wallet.png';
 import theme from '@styles/color';
 import { useFocusEffect } from '@react-navigation/native';
+import Wallet from 'ethereumjs-wallet';
 
 // export const sendMaticTransfer = async (to: string, amount: string) => {
 //   const pk = await AsyncStorage.getItem('PrivateKey');
@@ -74,14 +74,34 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const Store = ({}: StoreProps) => {
   const [privateKey, setPrivateKey] = useState('');
-  const [matic, setMatic] = useState('');
-  const [balance, setBalance] = useState('');
+  const [matic, setMatic] = useState('0');
+  const [balance, setBalance] = useState('0');
 
   const getPrivateKey = async () => {
-    const pk = await AsyncStorage.getItem('PrivateKey');
+    const pk = (await AsyncStorage.getItem('PrivateKey')) || null;
     setPrivateKey(pk ? pk : '');
     const account = privToAccount(pk);
 
+    const bal = await getMATICBalance(account?.address);
+    const seatBal = await getSEATBalance(account?.address);
+    setMatic(bal);
+    setBalance(seatBal);
+
+    const isVerify = await zkpVerify();
+    await getSigData(account?.privateKey);
+  };
+
+  const generateWallet = async () => {
+    const wallet = Wallet.generate();
+    const privateKey = '0x' + wallet.getPrivateKey().toString('hex');
+    setPrivateKey(privateKey);
+    await AsyncStorage.setItem('PrivateKey', privateKey);
+    await AsyncStorage.setItem(
+      'Address',
+      '0x' + wallet.getAddress().toString('hex'),
+    );
+
+    const account = privToAccount(privateKey);
     const bal = await getMATICBalance(account?.address);
     const seatBal = await getSEATBalance(account?.address);
     setMatic(bal);
@@ -98,7 +118,11 @@ const Store = ({}: StoreProps) => {
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.imageContainer}>
-          <Image resizeMode="contain" source={Wallet} style={styles.image} />
+          <Image
+            resizeMode="contain"
+            source={WalletImage}
+            style={styles.image}
+          />
         </View>
         <View style={styles.wallet}>
           <Button title={`내 지갑 정보`} type={`white`} />
@@ -121,7 +145,33 @@ const Store = ({}: StoreProps) => {
         </View>
       </View>
 
-      <Button title={`전환하기`} type={`yellow`} style={styles.button} />
+      {privateKey ? (
+        <>
+          <Button
+            title={`전환하기`}
+            type={`yellow`}
+            style={{
+              marginTop: 20,
+            }}
+          />
+          <Button
+            title={`지갑등록`}
+            type={`white`}
+            style={{
+              marginTop: 10,
+            }}
+          />
+        </>
+      ) : (
+        <Button
+          title={`지갑생성`}
+          type={`white`}
+          style={{
+            marginTop: 10,
+          }}
+          onPress={generateWallet}
+        />
+      )}
     </View>
   );
 };
@@ -134,7 +184,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   wrapper: {
-    marginTop: 140,
+    marginTop: 120,
     backgroundColor: theme.color.white,
     borderColor: theme.color.main,
     borderWidth: 3,
@@ -201,8 +251,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: theme.color.black,
     marginLeft: 16,
-  },
-  button: {
-    marginTop: 40,
   },
 });
