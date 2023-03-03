@@ -7,65 +7,87 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { modalState, seatIdState } from '~/recoil/atoms';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import {
+  StateType,
+  TrainSeatsType,
+  getSeatBySeatId,
+  patchSeatBySeatId,
+} from '~/api';
+import { isWatchState, modalState, seatIdState } from '~/recoil/atoms';
+import { useMutation, useQuery } from 'react-query';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DragButton from '~/components/DragButton';
 import { HomeStackNavProps } from '~/navigators/stackNav/HomeStackNav';
 import TextLoopTicker from '~/components/TextLoopTicker';
-import { getQrSvg } from '~/api';
 import { onboarding } from '~/assets/images';
 import theme from '~/styles/color';
 import useBluetooth from '~/hooks/useBluetooth';
 import { useNavigation } from '@react-navigation/native';
-import { useQuery } from 'react-query';
 
 const Home = () => {
   const navigation = useNavigation<HomeStackNavProps>();
   const setModalOpen = useSetRecoilState(modalState);
+  const [isWatch, setIsWatch] = useRecoilState(isWatchState);
   const [onServe, setOnServe] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [onModalVisible, setOnModalVisible] = useState(false);
 
-  const [qrData, setQrData] = useState('');
   const [nickName, setNickName] = useState('');
 
   const { onAdvertiseStart, onAdvertiseStop } = useBluetooth();
 
-  const seatId = useRecoilState(seatIdState);
+  const seatId = useRecoilValue(seatIdState);
 
   const moveQr = () => {
     setOnModalVisible(!onModalVisible);
     navigation.navigate('QrScan');
   };
-  const balance = 1;
-  const token = 'abc';
 
-  const getQrSvgQuery = useQuery(
-    ['getQrSvg', token],
-    async () => {
-      const address = await AsyncStorage.getItem('Address');
-
-      if (address) {
-        const result = await getQrSvg({
-          address,
-          balance,
-        });
-        return result;
-      }
+  const patchSeatBySeatIdMutation = useMutation(
+    'patchSeatBySeatId',
+    ({ seatId, state }: { seatId: number; state: StateType }) =>
+      patchSeatBySeatId(seatId, state),
+    {
+      onSuccess: () => {
+        // todo qr화면으로 이동 (유저이름, 지갑 address, balance값 전송해야됨)
+        navigation.navigate('QrScreen', { qrData: 'username' });
+      },
     },
-    { enabled: !!token },
   );
 
-  const moveQrCode = () => {
-    setModalVisible(!modalVisible);
-    const qrSvg = getQrSvgQuery.data;
-    setQrData(qrSvg);
-    navigation.navigate('QrScreen', {
-      qrData: qrSvg,
-    });
-  };
+  useQuery<TrainSeatsType, Error>(
+    ['getSeatBySeatId', isWatch],
+    async () => {
+      if (seatId) {
+        const res = await getSeatBySeatId(seatId);
+        console.log('> res : ', res);
+        return res;
+      }
+    },
+    {
+      onSuccess: data => {
+        if (data.state === 2 && seatId && isWatch) {
+          // if (seatId && isWatch) {
+          setModalOpen({
+            isOpen: true,
+            onPress: () => {
+              patchSeatBySeatIdMutation.mutate({ seatId: seatId, state: 3 });
+            },
+            onPressText: '수락하기',
+            onCancelText: '거절',
+            children: (
+              <View>
+                <Text></Text>
+                <Text>의 양보요청</Text>
+              </View>
+            ),
+          });
+        }
+      },
+      enabled: isWatch!!,
+    },
+  );
 
   const onAdvertise = async () => {
     // setModalOpen({
