@@ -18,7 +18,7 @@ web3.setProvider(
 const seatCA = '0xA6f00218efb6c0Fe4C53d01b2195e09A1E1a8523';
 const zkpVerifierCA = '0xDA218c923bcA169169D4aD0576653a223a3A4E04';
 // @ts-ignore
-const seatContract = new web3.eth.Contract(seatAbi, seatCA);
+export const seatContract = new web3.eth.Contract(seatAbi, seatCA);
 
 /*const balanceOf = web3.eth.abi.encodeFunctionSignature({
   "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
@@ -70,8 +70,42 @@ export const getSEATBalance = async (
   console.log(`SEAT Balance: ${tokenBalance}`);
   console.log(`SEAT Balance: ${Number(tokenBalance).toFixed(3)}`);
   return Number(tokenBalance).toFixed(3);
-};
+}
+export const sendTransfer = (txConfig: TransactionConfig, privKey: string | undefined) => {
+  console.log('txConfig', txConfig);
+  web3.eth.accounts.signTransaction(txConfig, privKey).then(signed => {
+    console.log('signed.rawTransaction', signed.rawTransaction);
+    if (signed.rawTransaction != null) {
+      web3.eth.sendSignedTransaction(signed.rawTransaction)
+        .on('transactionHash', function(hash){
+          console.log('hash', hash);
+        })
+        .on('receipt', function(receipt){
+          console.log('receipt', receipt);
+        })
+        .on('error', console.error);
+    }
+  });
+  //   .on('confirmation', function(confirmationNumber, receipt){
+  //     console.log('confirmationNumber');
+  //   })
+}
+export const sendTokenTransfer = (txConfig: TransactionConfig, privKey?: string) => {
+  console.log('txConfig', txConfig);
+  const data = seatContract.methods.transfer.getData(txConfig.to, txConfig.value);
 
+  console.log('data', data);
+  // seatContract.methods.transfer(txConfig.to, txConfig.value)
+  //   .send()
+  //   .then(console.log)
+  //   .catch(console.error);
+}
+
+export const getGasAmountForContractCall = async (from: string | undefined, to: string, amount: string) => {
+  const gasAmount = await seatContract.methods.transfer(to, Web3.utils.toWei(`${amount}`)).estimateGas({ from: from });
+  console.log('gasAmount', gasAmount);
+  return gasAmount;
+}
 const App = () => {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
 

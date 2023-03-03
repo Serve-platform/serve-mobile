@@ -6,6 +6,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '~/components/Button';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
 import Wallet from '@assets/images/wallet.png';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  getGasAmountForContractCall,
+  getMATICBalance,
+  getSEATBalance,
+  privToAccount, seatCA, seatContract, sendTokenTransfer,
+  sendTransfer,
+  web3
+} from "../../App";
 import theme from '@styles/color';
 
 const Store = ({}: StoreProps) => {
@@ -25,8 +34,58 @@ const Store = ({}: StoreProps) => {
     const bal = await getMATICBalance(account?.address);
     setMatic(bal);
     const seatBal = await getSEATBalance(account?.address);
-    setBalance(seatBal);
-  };
+
+    // sendTx
+    const amount = '0.0001';
+    const amountBal = web3.utils.toWei(amount, 'ether');
+    const gasAmount = await web3.eth.estimateGas({
+      from: account?.address,
+      to: account1,
+      value: amountBal,
+    });
+    const txConfig = {
+      from: account?.address,
+      to: account1,
+      value: amountBal,
+      chainId: 80001,
+      gas: gasAmount,
+    };
+    console.log('txConfig', txConfig);
+    // sendTransfer(txConfig, account?.privateKey);
+
+    const tokenAmount = '2';
+    const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
+    const tmpTxConfig = {
+      from: account?.address,
+      to: account1,
+      value: tokenAmountBal,
+    };
+
+    const transferData = seatContract.methods.transfer(tmpTxConfig.to, tmpTxConfig.value).encodeABI();
+    seatContract.methods.transfer(tmpTxConfig.to, tmpTxConfig.value).estimateGas({
+      from: tmpTxConfig.from,
+      to: seatCA,
+    })
+      .then((gasAmount: any) => {
+        const tokenTxConfig = {
+          from: account?.address,
+          to: seatCA,
+          value: '0x',
+          chainId: 80001,
+          gas: gasAmount,
+          data: transferData,
+        };
+        console.log('tokenTxConfig', tokenTxConfig);
+        // sendTransfer(tokenTxConfig, account?.privateKey);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+          setBalance(seatBal);
+  }
+
+
+
 
   useEffect(() => {
     getPrivateKey().then();
