@@ -25,12 +25,12 @@ import { useSetRecoilState } from 'recoil';
 export type GlobalStackParamList = {
   SignUp: undefined;
   TabNav: undefined;
-  QrScreen: { qrData: string };
+  QrScreen: { seatId: number };
   QrScan: undefined;
   TransferModal: undefined;
   BoardingInfo: undefined;
-  ConfirmDeal: undefined;
-  ConfirmDealByPassword: undefined;
+  ConfirmDeal: { value: any };
+  ConfirmDealByPassword: { seatId: number };
   SelectSeatInfo: undefined;
 };
 

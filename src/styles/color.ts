@@ -3,7 +3,8 @@ const white = '#ffffff';
 const black = '#000000';
 const gray = '#333333';
 const red = '#FF4444';
-const disable = "#494949"
+const disable = '#494949';
+const blue = '#006dd7';
 
 const grayscale = {
   F5F5F5: '#F5F5F5',
@@ -17,7 +18,8 @@ const color = {
   black,
   red,
   gray,
-  disable
+  disable,
+  blue,
 };
 
 const theme = {

@@ -46,9 +46,9 @@ interface BoardInfoStateType {
 export const boardInfoState = atom<BoardInfoStateType>({
   key: 'boardInfoState',
   default: {
-    trainUuid: '',
-    doorNumber: '',
-    trainLine: '2',
+    trainUuid: '1',
+    doorNumber: '1st',
+    trainLine: '구남규호선',
     trainLocation: '서울',
   },
 });

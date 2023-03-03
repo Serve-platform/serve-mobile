@@ -10,30 +10,47 @@ import theme from '@styles/color';
 import Button from '@components/Button';
 import DragButton from '@components/DragButton';
 import { useNavigation } from '@react-navigation/native';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { modalState } from '~/recoil/atoms';
 import InfiniteTrain from '@components/InfiniteTrain';
 import TextLoopTicker from '@components/TextLoopTicker';
 import SeatSelector from '@components/SeatSelector';
+import { useMutation, useQuery } from 'react-query';
+import {
+  getSeatBySeatId,
+  patchSeatBySeatId,
+  StateType,
+  TrainSeatsType,
+} from '~/api';
 
 const Index = ({}: FindProps) => {
   const navigation = useNavigation<FindStackNavProps>();
   const { foundUsers, onGetUsersForScanStart, onScanStop } = useBluetooth();
   const [onFind, setOnFind] = useState(false);
 
+  const [seatIdForDeal, setSeatIdForDeal] = useState(0);
+  const [isAcceptDeal, setIsAcceptDeal] = useState(false);
+
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
+
   const toggleFind = async () =>
     onFind ? onScanStop() : onGetUsersForScanStart();
 
-  const [modalOpen, setModalOpen] = useRecoilState(modalState);
-  // const [modalOpen] = useRecoilState(modalState);
-  // const setModalOpen = useSetRecoilState(modalState);
+  const patchSeatBySeatIdMutation = useMutation(
+    'patchSeatBySeatId',
+    ({ seatId, state }: { seatId: number; state: StateType }) =>
+      patchSeatBySeatId(seatId, state),
+  );
+
+  const getSeatId = (item: UserProp) => item.ownerSeat[0].id;
+  // item.ownerSeat.filter(seat => seat.state === 1)[0].id;
 
   const openRequestModal = (item: UserProp) => {
     setModalOpen({
       isOpen: true,
       onPressText: '요청하기',
       onCancelText: '닫기',
-      onPress: request,
+      onPress: () => request(item),
       children: (
         <>
           <Text
@@ -58,18 +75,23 @@ const Index = ({}: FindProps) => {
               marginBottom: 30,
               backgroundColor: theme.color.black,
             }}
-            content={item.transAcc}
+            content={item.locationinfo}
           />
-          <SeatSelector
-            seatId={item.seats.filter(seat => seat.state === 1)[0].id}
-          />
+          <SeatSelector seatId={getSeatId(item)} />
         </>
       ),
     });
   };
-  const request = () => {
-    // state 1을 2로 patch
-    // setModalOpen({ ...modalOpen, isOpen: false });
+  const request = (item: UserProp) => {
+    const seatId = getSeatId(item);
+    patchSeatBySeatIdMutation.mutate({
+      seatId: seatId,
+      state: 2,
+    });
+
+    setIsAcceptDeal(true);
+    setSeatIdForDeal(seatId);
+
     setModalOpen({
       isOpen: true,
       onCancelText: '취소',
@@ -81,7 +103,7 @@ const Index = ({}: FindProps) => {
               fontWeight: '700',
               color: theme.color.black,
             }}>
-            item.nickName
+            {item.nickName}
           </Text>
           <Text
             style={{
@@ -97,51 +119,66 @@ const Index = ({}: FindProps) => {
     });
   };
 
-  const confirmDeal = () => {
-    // state 1을 2로 patch
-    setModalOpen({
-      isOpen: true,
-      onPressText: '거래하기',
-      onCancelText: '거절',
-      onPress: moveQrScan,
-      children: (
-        <>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '700',
-              color: theme.color.black,
-            }}>
-            item.nickName
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '700',
-              color: theme.color.black,
-            }}>
-            의 양보 요청 수락
-          </Text>
-          <TextLoopTicker
-            style={{
-              marginTop: 10,
-              marginBottom: 10,
-              backgroundColor: theme.color.black,
-            }}
-            content="서울메트로 2호선 3386열차 3호칸 탑승 중adasdfsdffadfadf"
-          />
-          <Text
-            style={{
-              marginBottom: 30,
-              fontSize: 14,
-              color: theme.color.black,
-            }}>
-            다정한수박의 좌석으로 이동하세요
-          </Text>
-        </>
-      ),
-    });
-  };
+  useQuery<TrainSeatsType, Error>(
+    ['getSeatBySeatId', isAcceptDeal],
+    async () => {
+      if (seatIdForDeal > 0) {
+        const res = await getSeatBySeatId(seatIdForDeal);
+        return res;
+      }
+    },
+    {
+      onSuccess: (data: any) => {
+        if (data.state === 3 && seatIdForDeal > 0 && isAcceptDeal) {
+          setIsAcceptDeal(false);
+          setModalOpen({
+            isOpen: true,
+            onPressText: '거래하기',
+            onCancelText: '거절',
+            onPress: moveQrScan,
+            children: (
+              <>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: '700',
+                    color: theme.color.black,
+                  }}>
+                  {data.owner.nickName}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: '700',
+                    color: theme.color.black,
+                  }}>
+                  의 양보 요청 수락
+                </Text>
+                <TextLoopTicker
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                    backgroundColor: theme.color.black,
+                  }}
+                  content={data.owner.locationinfo}
+                />
+                <Text
+                  style={{
+                    marginBottom: 30,
+                    fontSize: 14,
+                    color: theme.color.black,
+                  }}>
+                  {data.owner.nickName}의 좌석으로 이동하세요
+                </Text>
+              </>
+            ),
+          });
+        }
+      },
+      refetchInterval: 1000,
+      enabled: !!isAcceptDeal,
+    },
+  );
 
   const moveQrScan = () => {
     setModalOpen({ ...modalOpen, isOpen: false });
@@ -150,8 +187,6 @@ const Index = ({}: FindProps) => {
 
   return (
     <View style={styles.container}>
-      <Text>Find</Text>
-
       {foundUsers.length > 0 ? (
         <ScrollView>
           {foundUsers.map((item: UserProp, i) => (
@@ -160,10 +195,10 @@ const Index = ({}: FindProps) => {
                 <Text style={styles.image}>{item.image}</Text>
                 <View style={styles.info}>
                   <Text style={styles.nickName}>{item.nickName}</Text>
-                  <Text style={styles.transArr}>{item.transAcc}</Text>
+                  <Text style={styles.locationInfo}>{item.locationinfo}</Text>
                 </View>
               </View>
-              {item.seats.length > 0 && (
+              {item.ownerSeat.length > 0 && (
                 <Button
                   title={`좌석보기 >`}
                   type={`small`}
@@ -183,23 +218,6 @@ const Index = ({}: FindProps) => {
           style={styles.dragButton}
         />
       )}
-      {/*<ScrollView>*/}
-      {/*  <View style={styles.wrapper}>*/}
-      {/*    <View style={styles.wrapper}>*/}
-      {/*      <Text style={styles.image}></Text>*/}
-      {/*      <View style={styles.info}>*/}
-      {/*        <Text style={styles.nickName}>asdfadsfa</Text>*/}
-      {/*        <Text style={styles.transArr}>3333</Text>*/}
-      {/*      </View>*/}
-      {/*    </View>*/}
-      {/*    <Button*/}
-      {/*      title={`좌석보기 >`}*/}
-      {/*      type={`small`}*/}
-      {/*      style={{ right: 0 }}*/}
-      {/*      onPress={openRequestModal}*/}
-      {/*    />*/}
-      {/*  </View>*/}
-      {/*</ScrollView>*/}
     </View>
   );
 };
@@ -232,7 +250,7 @@ const styles = StyleSheet.create({
     color: theme.color.main,
     fontWeight: 'bold',
   },
-  transArr: {
+  locationInfo: {
     fontSize: 14,
     color: theme.color.white,
   },

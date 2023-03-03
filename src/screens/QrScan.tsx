@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Text } from 'react-native';
 import { StyleSheet, View } from 'react-native';
 
@@ -8,12 +8,9 @@ import { Camera, CameraType } from 'react-native-camera-kit';
 
 const QrScan = ({ navigation }: QrScanProps) => {
   const onBarCodeRead = (event: any) => {
-    console.log(
-      '> event.nativeEvent.codeStringValue : ',
-      event.nativeEvent.codeStringValue,
-    );
-    navigation.navigate('ConfirmDeal');
-    // setScaned(true)
+    navigation.navigate('ConfirmDeal', {
+      value: event.nativeEvent.codeStringValue,
+    });
   };
 
   return (
@@ -52,8 +49,6 @@ export default QrScan;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },

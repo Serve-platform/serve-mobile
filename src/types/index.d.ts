@@ -13,7 +13,9 @@ export type UserProp = {
   concesHist: string;
   transAcc: string;
   kakaoUUID: string;
-  seats: SeatProp[];
+  locationinfo: string;
+  ownerSeat: SeatProp[];
+  bookUserSeat: SeatProp[];
 };
 
 export type SeatProp = {

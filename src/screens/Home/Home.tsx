@@ -55,8 +55,8 @@ const Home = () => {
       patchSeatBySeatId(seatIdProp, state),
     {
       onSuccess: () => {
-        // todo qr화면으로 이동 (유저이름, 지갑 address, balance값 전송해야됨)
-        navigation.navigate('QrScreen', { qrData: 'username' });
+        // @ts-ignore
+        navigation.navigate('QrScreen', { seatId: seatId });
       },
     },
   );
@@ -70,7 +70,7 @@ const Home = () => {
       }
     },
     {
-      onSuccess: data => {
+      onSuccess: (data: any) => {
         if (data.state === 2 && seatId && isWatch) {
           setModalOpen({
             isOpen: true,
@@ -86,7 +86,9 @@ const Home = () => {
             onCancelText: '거절',
             children: (
               <View>
-                <Text />
+                <Text style={{ color: theme.color.black }}>
+                  {data.nickName}
+                </Text>
                 <Text>의 양보요청</Text>
               </View>
             ),

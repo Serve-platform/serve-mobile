@@ -1,29 +1,38 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import Button from '~/components/Button';
 import theme from '~/styles/color';
 import { close } from '~/assets/icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ConfirmDealProps } from '@navigators/GlobalNav';
 
 const ConfirmDeal = () => {
   const navigation = useNavigation<ConfirmDealProps>();
+  const { params } = useRoute();
+  const data = JSON.parse(params?.value);
+  const address = data.address.substring(0, 7) + '...' + data.address.slice(-5);
 
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <Text style={styles.image}></Text>
-        <Text style={styles.nickName}>다정한 수박</Text>
-        <Text style={styles.text}>에게</Text>
-        <Text style={styles.seat}>3 Seat</Text>
+        <Text style={styles.nickName}>{data.nickName}</Text>
+        <Text style={styles.text}>
+          (<Text style={styles.address}>{address}</Text>) 에게
+        </Text>
+        <Text style={styles.seat}>{data.balance} Seat</Text>
         <Text style={styles.text}>를 전송합니다.</Text>
 
         <Button
           title={`CONFIRM`}
           type={'yellow'}
           style={styles.button}
-          onPress={() => navigation.navigate('ConfirmDealByPassword')}
+          onPress={() =>
+            navigation.navigate('ConfirmDealByPassword', {
+              seatId: data.seatId,
+            })
+          }
         />
 
         <TouchableOpacity
@@ -95,5 +104,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 14,
     color: theme.color.white,
+  },
+  address: {
+    color: theme.color.blue,
+    fontSize: 14,
   },
 });

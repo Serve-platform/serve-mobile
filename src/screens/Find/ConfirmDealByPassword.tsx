@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import theme from '~/styles/color';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ConfirmDealByPasswordProps } from '@navigators/GlobalNav';
 import { remove } from '@assets/icons';
+import { useMutation } from 'react-query';
+import { patchSeatBySeatId, StateType } from '~/api';
 
 const ConfirmDealByPassword = () => {
   const navigation = useNavigation<ConfirmDealByPasswordProps>();
+
+  const { params } = useRoute();
+  // @ts-ignore
+  const seatId = JSON.parse(params?.seatId);
+
   const [index, setIndex] = useState(0);
   const [passwords, setPasswords] = useState([
     null,
@@ -16,6 +23,12 @@ const ConfirmDealByPassword = () => {
     null,
     null,
   ]);
+
+  const patchSeatBySeatIdMutation = useMutation(
+    'patchSeatBySeatId',
+    ({ seatId, state }: { seatId: number; state: StateType }) =>
+      patchSeatBySeatId(seatId, state),
+  );
 
   const push = (number: number) => {
     let password = [...passwords];
@@ -34,6 +47,11 @@ const ConfirmDealByPassword = () => {
 
   useEffect(() => {
     if (passwords[5] != null) {
+      patchSeatBySeatIdMutation.mutate({
+        seatId: seatId,
+        state: 0,
+      });
+
       // @ts-ignore
       navigation.navigate('StoreStackNav');
     }
