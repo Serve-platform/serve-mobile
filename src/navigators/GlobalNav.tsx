@@ -30,7 +30,7 @@ export type GlobalStackParamList = {
   TransferModal: undefined;
   BoardingInfo: undefined;
   ConfirmDeal: { value: any };
-  ConfirmDealByPassword: { seatId: number };
+  ConfirmDealByPassword: { seatId: number; address: string; balance: string };
   SelectSeatInfo: undefined;
 };
 

@@ -95,7 +95,14 @@ const Home = () => {
                   }}>
                   {data.bookUser.nickName}
                 </Text>
-                <Text>의 양보요청</Text>
+                <Text
+                  style={{
+                    color: theme.color.black,
+                    textAlign: 'center',
+                    marginBottom: 20,
+                  }}>
+                  의 양보요청
+                </Text>
               </View>
             ),
           });
@@ -118,6 +125,7 @@ const Home = () => {
   const getNickName = async () => {
     const nickNameState = (await AsyncStorage.getItem('nickName')) || '';
     setNickName(nickNameState);
+    console.log('> account?.address ');
   };
 
   useEffect(() => {

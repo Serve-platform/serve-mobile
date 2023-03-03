@@ -10,6 +10,7 @@ import { ConfirmDealProps } from '@navigators/GlobalNav';
 const ConfirmDeal = () => {
   const navigation = useNavigation<ConfirmDealProps>();
   const { params } = useRoute();
+  // @ts-ignore
   const data = JSON.parse(params?.value);
   const address = data.address.substring(0, 7) + '...' + data.address.slice(-5);
 
@@ -31,6 +32,8 @@ const ConfirmDeal = () => {
           onPress={() =>
             navigation.navigate('ConfirmDealByPassword', {
               seatId: data.seatId,
+              address: data.address,
+              balance: data.balance,
             })
           }
         />

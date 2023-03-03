@@ -92,7 +92,8 @@ export const sendTransfer = (
 };
 
 export const getSigData = async (privKey: string | undefined) => {
-  const message = 'Welcome to Serveway!/nClick to sign in and accept the Serveway Service./nThis request will not trigger a blockchain transaction or cost any gas fees.';
+  const message =
+    'Welcome to Serveway!/nClick to sign in and accept the Serveway Service./nThis request will not trigger a blockchain transaction or cost any gas fees.';
   const res = web3.eth.accounts.sign(message, privKey);
   const msgHash = res.messageHash;
   const v = web3.utils.hexToNumber(res.v);
@@ -165,9 +166,7 @@ const App = () => {
 
   return (
     <>
-      <NavigationContainer>
-        <GlobalNav />
-      </NavigationContainer>
+      <GlobalNav />
       {modalOpen && (
         <DefaultModal
           onPress={modalOpen.onPress}

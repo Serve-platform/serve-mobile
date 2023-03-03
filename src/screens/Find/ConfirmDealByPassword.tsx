@@ -1,11 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import theme from '~/styles/color';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { ConfirmDealByPasswordProps } from '@navigators/GlobalNav';
 import { remove } from '@assets/icons';
 import { useMutation } from 'react-query';
 import { patchSeatBySeatId, StateType } from '~/api';
+import InfiniteTrain from '@components/InfiniteTrain';
+import { useRecoilState } from 'recoil';
+import { modalState } from '~/recoil/atoms';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { privToAccount, seatCA, seatContract, web3 } from '../../../App';
+import { TransactionConfig } from 'web3-core';
+import TextLoopTicker from '@components/TextLoopTicker';
+import SeatSelector from '@components/SeatSelector';
 
 const ConfirmDealByPassword = () => {
   const navigation = useNavigation<ConfirmDealByPasswordProps>();
@@ -13,6 +28,10 @@ const ConfirmDealByPassword = () => {
   const { params } = useRoute();
   // @ts-ignore
   const seatId = JSON.parse(params?.seatId);
+  // @ts-ignore
+  const address = params?.address;
+  // @ts-ignore
+  const balance = params?.balance;
 
   const [index, setIndex] = useState(0);
   const [passwords, setPasswords] = useState([
@@ -23,6 +42,8 @@ const ConfirmDealByPassword = () => {
     null,
     null,
   ]);
+
+  const [modalOpen, setModalOpen] = useRecoilState(modalState);
 
   const patchSeatBySeatIdMutation = useMutation(
     'patchSeatBySeatId',
@@ -45,6 +66,89 @@ const ConfirmDealByPassword = () => {
     setIndex(index - 1);
   };
 
+  const sendSeatTransfer = async (to: string, tokenAmount: string) => {
+    const pk = await AsyncStorage.getItem('PrivateKey');
+    const account = privToAccount(pk);
+    console.log('> account?.address : ', account?.address);
+
+    const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
+    const tmpTxConfig = {
+      from: account?.address,
+      to: to,
+      value: tokenAmountBal,
+    };
+
+    const transferData = seatContract.methods
+      .transfer(tmpTxConfig.to, tmpTxConfig.value)
+      .encodeABI();
+    seatContract.methods
+      .transfer(tmpTxConfig.to, tmpTxConfig.value)
+      .estimateGas({
+        from: tmpTxConfig.from,
+        to: seatCA,
+      })
+      .then((gasAmountProp: any) => {
+        const tokenTxConfig = {
+          from: account?.address,
+          to: seatCA,
+          value: '0x',
+          chainId: 80001,
+          gas: gasAmountProp,
+          data: transferData,
+        };
+        console.log('tokenTxConfig', tokenTxConfig);
+        sendTransfer(tokenTxConfig, account?.privateKey);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
+  const sendTransfer = (
+    txConfig: TransactionConfig,
+    privKey: string | undefined,
+  ) => {
+    console.log('txConfig', txConfig);
+    if (privKey != null) {
+      web3.eth.accounts.signTransaction(txConfig, privKey).then(signed => {
+        console.log('signed.rawTransaction', signed.rawTransaction);
+        if (signed.rawTransaction != null) {
+          web3.eth
+            .sendSignedTransaction(signed.rawTransaction)
+            .on('transactionHash', function (hash) {
+              console.log('hash', hash);
+            })
+            .on('receipt', function (receipt) {
+              // console.log('receipt', receipt);
+              setModalOpen({
+                isOpen: true,
+                onPressText: 'STORE로 가기',
+                onCancelText: '닫기',
+                onPress: () => {
+                  // @ts-ignore
+                  navigation.navigate('StoreStackNav');
+                  setModalOpen({ ...modalOpen, isOpen: false });
+                },
+                children: (
+                  <>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: '700',
+                        color: theme.color.black,
+                      }}>
+                      {receipt.transactionHash}
+                    </Text>
+                  </>
+                ),
+              });
+            })
+            .on('error', console.error);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     if (passwords[5] != null) {
       patchSeatBySeatIdMutation.mutate({
@@ -52,8 +156,25 @@ const ConfirmDealByPassword = () => {
         state: 0,
       });
 
-      // @ts-ignore
-      navigation.navigate('StoreStackNav');
+      sendSeatTransfer(address, balance);
+
+      setModalOpen({
+        isOpen: true,
+        onCancelText: '취소',
+        children: (
+          <>
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: '700',
+                color: theme.color.black,
+              }}>
+              Transfer 중...
+            </Text>
+            <InfiniteTrain />
+          </>
+        ),
+      });
     }
   }, [passwords]);
 

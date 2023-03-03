@@ -3,87 +3,82 @@ import React, { useEffect, useState } from 'react';
 import {
   getMATICBalance,
   getSEATBalance,
-  getSigData,
   privToAccount,
   seatCA,
   seatContract,
-  sendTransfer,
   web3,
-  zkpVerify,
 } from '../../App';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '~/components/Button';
 import { StoreProps } from '@navigators/stackNav/StoreStackNav';
-
-import Wallet from 'ethereumjs-wallet';
-import WalletImage from '@assets/images/wallet.png';
+import Wallet from '@assets/images/wallet.png';
 import theme from '@styles/color';
+import { useFocusEffect } from '@react-navigation/native';
 
-export const sendMaticTransfer = async (to: string, amount: string) => {
-  const pk = await AsyncStorage.getItem('PrivateKey');
-  const account = privToAccount(pk);
-
-  const amountBal = web3.utils.toWei(amount, 'ether');
-  const gasAmount = await web3.eth.estimateGas({
-    from: account?.address,
-    to: to,
-    value: amountBal,
-  });
-  const txConfig = {
-    from: account?.address,
-    to: to,
-    value: amountBal,
-    chainId: 80001,
-    gas: gasAmount,
-  };
-  console.log('txConfig', txConfig);
-  sendTransfer(txConfig, account?.privateKey);
-};
-export const sendSeatTransfer = async (to: string, tokenAmount: string) => {
-  const pk = await AsyncStorage.getItem('PrivateKey');
-  const account = privToAccount(pk);
-
-  const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
-  const tmpTxConfig = {
-    from: account?.address,
-    to: to,
-    value: tokenAmountBal,
-  };
-
-  const transferData = seatContract.methods
-    .transfer(tmpTxConfig.to, tmpTxConfig.value)
-    .encodeABI();
-  seatContract.methods
-    .transfer(tmpTxConfig.to, tmpTxConfig.value)
-    .estimateGas({
-      from: tmpTxConfig.from,
-      to: seatCA,
-    })
-    .then((gasAmountProp: any) => {
-      const tokenTxConfig = {
-        from: account?.address,
-        to: seatCA,
-        value: '0x',
-        chainId: 80001,
-        gas: gasAmountProp,
-        data: transferData,
-      };
-      console.log('tokenTxConfig', tokenTxConfig);
-      sendTransfer(tokenTxConfig, account?.privateKey);
-    })
-    .catch((error: any) => {
-      console.log(error);
-    });
-};
+// export const sendMaticTransfer = async (to: string, amount: string) => {
+//   const pk = await AsyncStorage.getItem('PrivateKey');
+//   const account = privToAccount(pk);
+//   const amountBal = web3.utils.toWei(amount, 'ether');
+//   const gasAmount = await web3.eth.estimateGas({
+//     from: account?.address,
+//     to: to,
+//     value: amountBal,
+//   });
+//   const txConfig = {
+//     from: account?.address,
+//     to: to,
+//     value: amountBal,
+//     chainId: 80001,
+//     gas: gasAmount,
+//   };
+//   console.log('txConfig', txConfig);
+//   sendTransfer(txConfig, account?.privateKey);
+// }
+// export const sendSeatTransfer = async (to: string, tokenAmount: string) => {
+//   const pk = await AsyncStorage.getItem('PrivateKey');
+//   const account = privToAccount(pk);
+//
+//   const tokenAmountBal = web3.utils.toWei(tokenAmount, 'ether');
+//   const tmpTxConfig = {
+//     from: account?.address,
+//     to: to,
+//     value: tokenAmountBal,
+//   };
+//
+//   const transferData = seatContract.methods
+//     .transfer(tmpTxConfig.to, tmpTxConfig.value)
+//     .encodeABI();
+//   seatContract.methods
+//     .transfer(tmpTxConfig.to, tmpTxConfig.value)
+//     .estimateGas({
+//       from: tmpTxConfig.from,
+//       to: seatCA,
+//     })
+//     .then((gasAmountProp: any) => {
+//       const tokenTxConfig = {
+//         from: account?.address,
+//         to: seatCA,
+//         value: '0x',
+//         chainId: 80001,
+//         gas: gasAmountProp,
+//         data: transferData,
+//       };
+//       console.log('tokenTxConfig', tokenTxConfig);
+//       sendTransfer(tokenTxConfig, account?.privateKey);
+//     })
+//     .catch((error: any) => {
+//       console.log(error);
+//     });
+// }
 
 const Store = ({}: StoreProps) => {
   const [privateKey, setPrivateKey] = useState('');
-  const [matic, setMatic] = useState('0');
-  const [balance, setBalance] = useState('0');
+  const [matic, setMatic] = useState('');
+  const [balance, setBalance] = useState('');
 
   const getPrivateKey = async () => {
-    const pk = (await AsyncStorage.getItem('PrivateKey')) || null;
+    const pk = await AsyncStorage.getItem('PrivateKey');
     setPrivateKey(pk ? pk : '');
     const account = privToAccount(pk);
 
@@ -91,41 +86,19 @@ const Store = ({}: StoreProps) => {
     const seatBal = await getSEATBalance(account?.address);
     setMatic(bal);
     setBalance(seatBal);
-
-    const isVerify = await zkpVerify();
-    await getSigData(account?.privateKey);
   };
 
-  const generateWallet = async () => {
-    const wallet = Wallet.generate();
-    const privateKey = '0x' + wallet.getPrivateKey().toString('hex');
-    setPrivateKey(privateKey);
-    await AsyncStorage.setItem('PrivateKey', privateKey);
-    await AsyncStorage.setItem(
-      'Address',
-      '0x' + wallet.getAddress().toString('hex'),
-    );
-
-    const account = privToAccount(privateKey);
-    const bal = await getMATICBalance(account?.address);
-    const seatBal = await getSEATBalance(account?.address);
-    setMatic(bal);
-    setBalance(seatBal);
-  };
-
-  useEffect(() => {
-    getPrivateKey().then();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getPrivateKey().then();
+    }, []),
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.imageContainer}>
-          <Image
-            resizeMode="contain"
-            source={WalletImage}
-            style={styles.image}
-          />
+          <Image resizeMode="contain" source={Wallet} style={styles.image} />
         </View>
         <View style={styles.wallet}>
           <Button title={`내 지갑 정보`} type={`white`} />
@@ -148,18 +121,7 @@ const Store = ({}: StoreProps) => {
         </View>
       </View>
 
-      {privateKey ? (
-        <Button title={`전환하기`} type={`yellow`} style={styles.button} />
-      ) : (
-        <Button
-          title={`지갑생성`}
-          type={`white`}
-          style={{
-            marginTop: 10,
-          }}
-          onPress={generateWallet}
-        />
-      )}
+      <Button title={`전환하기`} type={`yellow`} style={styles.button} />
     </View>
   );
 };
