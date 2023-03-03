@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import { modalState } from '~/recoil/atoms';
 import { seatAbi } from '@utils/abis';
 import { useRecoilState } from 'recoil';
+const snarkjs = require("snarkjs");
 
 export const web3 = new Web3();
 web3.setProvider(
@@ -90,30 +91,23 @@ export const sendTransfer = (txConfig: TransactionConfig, privKey: string | unde
     }
   });
 };
-/*export const sendTokenTransfer = (
-  txConfig: TransactionConfig,
-  privKey?: string,
-) => {
-  console.log('txConfig', txConfig);
-  const data = seatContract.methods.transfer.getData(
-    txConfig.to,
-    txConfig.value,
-  );
 
-  console.log('data', data);
-};
-
-export const getGasAmountForContractCall = async (
-  from: string | undefined,
-  to: string,
-  amount: string,
-) => {
-  const gasAmount = await seatContract.methods
-    .transfer(to, Web3.utils.toWei(`${amount}`))
-    .estimateGas({ from: from });
-  console.log('gasAmount', gasAmount);
-  return gasAmount;
-};*/
+export const zkpVerify = async () => {
+  const addr1 = '129394504787394156839024801174952106571260817630';
+  const sig1 = '15318967113085362415445465826082254278308254046836';
+  console.log(__dirname);
+  const wasm = `${__dirname}/src/zkp/tupleCheck.wasm`;
+  const zkey = `${__dirname}/src/zkp/tupleCheck_0001.zkey`;
+  // const b = fs.existsSync(wasm);
+  // const c = fs.existsSync(zkey);
+  // console.log('wasm', b);
+  // console.log('zkey', c);
+  const {proof, publicSignals} = await snarkjs.groth16.fullProve({
+    address: addr1,
+    sig: sig1
+  }, wasm, zkey);
+  console.log('publicSignals', publicSignals);
+}
 const App = () => {
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
 

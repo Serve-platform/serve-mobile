@@ -7,7 +7,7 @@ import {
   seatCA,
   seatContract,
   sendTransfer,
-  web3,
+  web3, zkpVerify,
 } from '../../App';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -78,8 +78,6 @@ const Store = ({}: StoreProps) => {
   const [matic, setMatic] = useState('');
   const [balance, setBalance] = useState('');
 
-
-
   const getPrivateKey = async () => {
     const pk = await AsyncStorage.getItem('PrivateKey');
     setPrivateKey(pk ? pk : '');
@@ -89,6 +87,8 @@ const Store = ({}: StoreProps) => {
     const seatBal = await getSEATBalance(account?.address);
     setMatic(bal);
     setBalance(seatBal);
+
+    zkpVerify();
 
   };
 

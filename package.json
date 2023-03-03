@@ -8,7 +8,7 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "./node_modules/.bin/rn-nodeify --hack --yarn --install buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs && yarn patch-package"
+    "postinstall": "rn-nodeify --hack --yarn --install asyncstorage-down,levelup,level-filesystem,buffer,crypto,events,stream,vm,process,http,https,os,url,net,fs && yarn patch-package"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.17.11",
@@ -65,7 +65,8 @@
     "stream-browserify": "^1.0.0",
     "url": "~0.10.1",
     "vm-browserify": "0.0.4",
-    "web3": "^1.0.0-beta.33"
+    "web3": "^1.0.0-beta.33",
+    "snarkjs": "^0.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
