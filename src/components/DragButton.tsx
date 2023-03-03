@@ -1,4 +1,5 @@
 import {
+  Alert,
   Animated,
   Dimensions,
   Easing,
@@ -20,6 +21,7 @@ interface DragButtonPropType {
   setIsOn: (serve: boolean) => void;
   type: 'serve' | 'find';
   style?: ViewStyle;
+  disabled?: boolean;
 }
 
 const DragButton = ({
@@ -28,6 +30,7 @@ const DragButton = ({
   setIsOn,
   type,
   style,
+  disabled,
 }: DragButtonPropType) => {
   const moveAnim = useRef(new Animated.Value(-2)).current;
   const typeUpperCase = type.toUpperCase();
@@ -63,6 +66,10 @@ const DragButton = ({
       <>
         <Pressable
           onPress={() => {
+            if (disabled) {
+              Alert.alert('탑승 정보를 입력하세요');
+              return;
+            }
             onPress();
             setIsOn(!isOn);
           }}>

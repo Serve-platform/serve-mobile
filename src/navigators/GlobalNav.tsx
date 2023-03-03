@@ -17,8 +17,10 @@ import SelectSeatInfo from '~/screens/Home/SelectSeatInfo';
 import SignUp from '~/screens/onBoard/SignUp';
 import TabNavigator from '~/navigators/TabNav';
 import TransferModal from '~/screens/TransferModal';
+import { seatIdState } from '~/recoil/atoms';
 import theme from '~/styles/color';
 import { useNavigation } from '@react-navigation/native';
+import { useSetRecoilState } from 'recoil';
 
 export type GlobalStackParamList = {
   SignUp: undefined;
@@ -76,6 +78,7 @@ export type TransferModalProps = NativeStackScreenProps<
 const Stack = createStackNavigator<GlobalStackParamList>();
 
 const GlobalNav = () => {
+  const setSeatId = useSetRecoilState(seatIdState);
   const navigation = useNavigation<BoardingInfoProps>();
   const navigationConfirmDeal = useNavigation<ConfirmDealProps>();
   const navigationConfirmDealByPassword =
@@ -144,7 +147,10 @@ const GlobalNav = () => {
               <TouchableOpacity
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
                 style={{ marginLeft: 30 }}
-                onPress={() => navigation.goBack()}>
+                onPress={() => {
+                  setSeatId(null);
+                  navigation.goBack();
+                }}>
                 <Image
                   style={{
                     width: 16,

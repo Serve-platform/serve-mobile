@@ -26,7 +26,29 @@ export const modalState = atom<ModalStateType>({
   },
 });
 
-export const seatIdState = atom<number>({
+export const seatIdState = atom<number | null>({
   key: 'seatIdState',
-  default: 0,
+  default: null,
+});
+
+export const isWatchState = atom<boolean>({
+  key: 'isWatchState',
+  default: false,
+});
+
+interface BoardInfoStateType {
+  trainUuid: string;
+  doorNumber: string;
+  trainLine: string;
+  trainLocation: string;
+}
+
+export const boardInfoState = atom<BoardInfoStateType>({
+  key: 'boardInfoState',
+  default: {
+    trainUuid: '',
+    doorNumber: '',
+    trainLine: '2',
+    trainLocation: '서울',
+  },
 });

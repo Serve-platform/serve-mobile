@@ -13,17 +13,18 @@ import {
   getTrainSeatAll,
   patchSeatBySeatId,
 } from '~/api';
-import {
-  HandlerStateChangeEvent,
-  PinchGestureHandler,
-  PinchGestureHandlerEventPayload,
-} from 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { modalState, seatIdState } from '~/recoil/atoms';
+import {
+  boardInfoState,
+  isWatchState,
+  modalState,
+  seatIdState,
+} from '~/recoil/atoms';
 import { useMutation, useQuery } from 'react-query';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 import Button from '~/components/Button';
+import { PinchGestureHandler } from 'react-native-gesture-handler';
 import SeatButton from '~/components/SeatButton';
 import SeatSelector from '~/components/SeatSelector';
 import theme from '~/styles/color';
@@ -33,15 +34,17 @@ import { useNavigation } from '@react-navigation/native';
 const SelectSeatInfo = () => {
   const navigation = useNavigation();
   const [modalOpen, setModalOpen] = useRecoilState(modalState);
+  const boardInfo = useRecoilValue(boardInfoState);
+  const setIsWatch = useSetRecoilState(isWatchState);
   const [seatId, seatSetId] = useRecoilState(seatIdState);
   const scaleAni = new Animated.Value(1);
 
   const [seatButtonLeftState, setSeatButtonLeftState] = useState<
-    TrainSeatsType[]
+    (TrainSeatsType & { isClick: boolean })[]
   >([]);
 
   const [seatButtonRightState, setSeatButtonRightState] = useState<
-    TrainSeatsType[]
+    (TrainSeatsType & { isClick: boolean })[]
   >([]);
 
   const onZoomEvent = Animated.event(
@@ -70,8 +73,8 @@ const SelectSeatInfo = () => {
 
   const patchSeatBySeatIdMutation = useMutation(
     'patchSeatBySeatId',
-    ({ seatId, state }: { seatId: number; state: StateType }) =>
-      patchSeatBySeatId(seatId, state),
+    ({ seatIdProp, state }: { seatIdProp: number; state: StateType }) =>
+      patchSeatBySeatId(seatIdProp, state),
   );
 
   const changeButtonState = (
@@ -199,9 +202,9 @@ const SelectSeatInfo = () => {
             onPress: () => {
               seatButtonLeftState.forEach(e => {
                 if (e.isClick) {
-                  seatSetId(e.state);
+                  seatSetId(e.id);
                   patchSeatBySeatIdMutation.mutate({
-                    seatId: e.id,
+                    seatIdProp: e.id,
                     state: 1,
                   });
                 }
@@ -209,14 +212,15 @@ const SelectSeatInfo = () => {
 
               seatButtonRightState.forEach(e => {
                 if (e.isClick) {
-                  seatSetId(e.state);
+                  seatSetId(e.id);
                   patchSeatBySeatIdMutation.mutate({
-                    seatId: e.id,
+                    seatIdProp: e.id,
                     state: 1,
                   });
                 }
               });
 
+              setIsWatch(true);
               setModalOpen({ ...modalOpen, isOpen: false });
               navigation.goBack();
               navigation.goBack();
@@ -240,9 +244,9 @@ const SelectSeatInfo = () => {
                     lineHeight: 21,
                     marginVertical: 25,
                   }}>
-                  {'서울지하철 2호선\n7236 열차 3-2 출입문 근처'}
+                  {`${boardInfo.trainLocation}지하철 ${boardInfo.trainLine}호선\n${boardInfo.trainUuid} 열차 ${boardInfo.doorNumber} 출입문 근처`}
                 </Text>
-                <SeatSelector seatId={seatId} />
+                <SeatSelector seatId={seatId ?? 0} />
               </>
             ),
           })

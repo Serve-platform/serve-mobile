@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BoardingInfoProps } from '~/navigators/GlobalNav';
@@ -6,16 +5,16 @@ import Button from '~/components/Button';
 import Input from '~/components/Input';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Label from '~/components/Label';
+import React from 'react';
+import { boardInfoState } from '~/recoil/atoms';
 import theme from '~/styles/color';
 import { useNavigation } from '@react-navigation/native';
+import { useRecoilState } from 'recoil';
 
 const BoardingInfo = () => {
   const navigation = useNavigation<BoardingInfoProps>();
-  // 탑승정보 임시 고정 (trainId: 1)
-  const [location, setLocation] = useState('서울');
-  const [line, setLine] = useState('구남규호선');
-  const [trainNumber, setTrainNumber] = useState('1st');
-  const [doorNumber, setDoorNumber] = useState('1');
+  const [boardInfo, setBoardInfo] = useRecoilState(boardInfoState);
+
   return (
     <KeyboardAwareScrollView style={styles.container}>
       <Text style={styles.title}>
@@ -26,20 +25,33 @@ const BoardingInfo = () => {
         <Label title={`탑승 지하철 및 호선`} isValidate={true} />
         <View style={styles.wrapper}>
           <Input
-            value={location}
-            setValue={setLocation}
+            value={boardInfo.trainLocation}
+            setValue={(value: string) =>
+              setBoardInfo({ ...boardInfo, trainLocation: value })
+            }
             style={{ marginRight: 10 }}
             disabled={true}
           />
-          <Input value={line} setValue={setLine} disabled={true} />
+          <Input
+            value={boardInfo.trainLine}
+            setValue={(value: string) =>
+              setBoardInfo({
+                ...boardInfo,
+                trainLine: value,
+              })
+            }
+            disabled={true}
+          />
         </View>
 
         <Label title={`열차고유번호`} isValidate={true} hasDescription={true} />
         <View style={styles.wrapper}>
           <Input
             keyboardType={'number-pad'}
-            value={trainNumber}
-            setValue={setTrainNumber}
+            value={boardInfo.trainUuid}
+            setValue={(value: string) =>
+              setBoardInfo({ ...boardInfo, trainUuid: value })
+            }
           />
         </View>
 
@@ -47,12 +59,15 @@ const BoardingInfo = () => {
         <View style={styles.wrapper}>
           <Input
             keyboardType={'number-pad'}
-            value={doorNumber}
-            setValue={setDoorNumber}
+            value={boardInfo.doorNumber}
+            setValue={(value: string) =>
+              setBoardInfo({ ...boardInfo, doorNumber: value })
+            }
           />
         </View>
         <View style={styles.button}>
           <Button
+            disabled={boardInfo.doorNumber === '' || boardInfo.trainUuid === ''}
             onPress={() => navigation.navigate('SelectSeatInfo')}
             title={`다음으로`}
           />

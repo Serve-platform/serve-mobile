@@ -20,8 +20,6 @@ const SeatSelector = ({ seatId }: { seatId: number }) => {
     setButtonBottom.fill(false),
   );
 
-  console.log(seatId, 'seatId');
-
   useEffect(() => {
     setSeatButtonTopState(
       seatButtonTopState.fill(false).map((_, i) => {

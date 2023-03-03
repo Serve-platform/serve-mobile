@@ -32,7 +32,7 @@ const Input = ({
         <TextInput
           keyboardType={keyboardType}
           defaultValue={value?.toString()}
-          onChangeText={v => (setValue ? setValue(v) : null)}
+          onChangeText={setValue}
           style={styles.input}
           placeholder={`입력하세요`}
           placeholderTextColor={`#fff`}
