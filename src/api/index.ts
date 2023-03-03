@@ -77,7 +77,6 @@ export interface TrainSeatsType{
   state:StateType,
   uuid:string,
   trainUuid:number,
-  isClick:boolean
 }
 
 export interface GetTrainSeatAllType{
@@ -115,7 +114,7 @@ export const getSeatBySeatId = async (seatId: number) => {
     },
   });
   if (res) {
-    return res.data;
+    return res.data.result;
   }
 };
 // 특정 좌석 예약

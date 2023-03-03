@@ -26,7 +26,12 @@ export const modalState = atom<ModalStateType>({
   },
 });
 
-export const seatIdState = atom<number>({
+export const seatIdState = atom<number | null>({
   key: 'seatIdState',
-  default: 0,
+  default: null,
+});
+
+export const isWatchState = atom<boolean>({
+  key: 'isWatchState',
+  default: false,
 });
