@@ -133,8 +133,9 @@ const ConfirmDealByPassword = () => {
                   <>
                     <Text
                       style={{
-                        fontSize: 20,
-                        fontWeight: '700',
+                        fontSize: 12,
+                        paddingTop: 30,
+                        paddingBottom: 40,
                         color: theme.color.black,
                       }}>
                       {receipt.transactionHash}
