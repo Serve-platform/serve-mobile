@@ -130,7 +130,7 @@ const Store = ({}: StoreProps) => {
         <View style={styles.balance}>
           <Text style={styles.label}>balance</Text>
           <View>
-            <Text style={styles.coins}>{balance}</Text>
+            <Text style={styles.coins}>{matic}</Text>
             <View style={styles.highlight} />
           </View>
           <Text style={styles.seat}>MATIC</Text>
@@ -138,7 +138,7 @@ const Store = ({}: StoreProps) => {
 
         <View style={[styles.balance, { marginTop: 0, marginLeft: 70 }]}>
           <View>
-            <Text style={styles.coins}>{matic}</Text>
+            <Text style={styles.coins}>{balance}</Text>
             <View style={styles.highlight} />
           </View>
           <Text style={styles.seat}>SEAT</Text>
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     marginRight: 50,
   },
   coins: {
-    fontSize: 40,
+    fontSize: 36,
     color: theme.color.black,
     fontWeight: 'bold',
     position: 'relative',
