@@ -63,7 +63,7 @@ const QrScreen = ({ navigation }: QrScreenProps) => {
       </View>
 
       <Text style={{ marginTop: 40, color: theme.color.white }}>
-        QR 코드를 제시하세요
+        Please show QR code
       </Text>
     </View>
   );

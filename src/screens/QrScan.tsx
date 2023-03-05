@@ -27,7 +27,7 @@ const QrScan = ({ navigation }: QrScanProps) => {
             textAlign: 'center',
             color: theme.color.white,
           }}>
-          QR코드를 스캔해주세요
+          Please scan the QR code.
         </Text>
         <Camera
           style={{ flex: 1 }}

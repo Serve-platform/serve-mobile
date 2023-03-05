@@ -67,7 +67,7 @@ const DragButton = ({
         <Pressable
           onPress={() => {
             if (disabled) {
-              Alert.alert('탑승 정보를 입력하세요');
+              Alert.alert('Insert Boarding Info');
               return;
             }
             onPress();

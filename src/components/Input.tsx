@@ -34,7 +34,7 @@ const Input = ({
           defaultValue={value?.toString()}
           onChangeText={setValue}
           style={styles.input}
-          placeholder={`입력하세요`}
+          placeholder={`Insert`}
           placeholderTextColor={`#fff`}
         />
       )}

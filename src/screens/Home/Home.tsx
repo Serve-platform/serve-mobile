@@ -82,8 +82,8 @@ const Home = () => {
                 state: 3,
               });
             },
-            onPressText: '수락하기',
-            onCancelText: '거절',
+            onPressText: 'confirm',
+            onCancelText: 'decline',
             children: (
               <View>
                 <Text
@@ -101,7 +101,7 @@ const Home = () => {
                     textAlign: 'center',
                     marginBottom: 20,
                   }}>
-                  의 양보요청
+                  a request for concession
                 </Text>
               </View>
             ),
@@ -205,7 +205,7 @@ const Home = () => {
                 ? theme.color.black
                 : 'rgba(245, 245, 245, 0.4)',
             }}
-            content={`${boardInfo.trainLocation}메트로 ${boardInfo.trainLine}호선 ${boardInfo.trainUuid}열차 ${boardInfo.doorNumber}호칸 탑승 중`}
+            content={`${boardInfo.trainLocation}Station ${boardInfo.trainLine}line ${boardInfo.trainUuid}train on${boardInfo.doorNumber}`}
           />
         ) : (
           <View style={styles.boardInfo}>
@@ -215,8 +215,8 @@ const Home = () => {
                 color: theme.color.white,
               }}>
               {isWatch
-                ? `${boardInfo.trainLocation}메트로 ${boardInfo.trainLine}호선 ${boardInfo.trainUuid}열차 ${boardInfo.doorNumber}호칸 탑승 중`
-                : '탑승 정보 입력'}
+                ? `${boardInfo.trainLocation}Station ${boardInfo.trainLine}line ${boardInfo.trainUuid}train on${boardInfo.doorNumber}`
+                : 'Enter boarding information'}
             </Text>
           </View>
         )}

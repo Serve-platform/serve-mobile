@@ -20,10 +20,10 @@ const ConfirmDeal = () => {
         <Text style={styles.image}></Text>
         <Text style={styles.nickName}>{data.nickName}</Text>
         <Text style={styles.text}>
-          (<Text style={styles.address}>{address}</Text>) 에게
+          to (<Text style={styles.address}>{address}</Text>)
         </Text>
+        <Text style={styles.text}>send</Text>
         <Text style={styles.seat}>{data.balance} Seat</Text>
-        <Text style={styles.text}>를 전송합니다.</Text>
 
         <Button
           title={`CONFIRM`}
@@ -55,7 +55,7 @@ const ConfirmDeal = () => {
               height: 12,
             }}
           />
-          <Text style={styles.cancel}> 취소</Text>
+          <Text style={styles.cancel}> cancel</Text>
         </TouchableOpacity>
       </View>
     </View>

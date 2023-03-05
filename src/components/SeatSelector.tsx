@@ -94,7 +94,7 @@ const SeatSelector = ({ seatId }: { seatId: number }) => {
               fontWeight: '500',
               color: theme.color.black,
             }}>
-            열차 진행방향
+            Train direction
           </Text>
         </View>
         <View style={{ flexDirection: 'row', marginBottom: 40 }}>

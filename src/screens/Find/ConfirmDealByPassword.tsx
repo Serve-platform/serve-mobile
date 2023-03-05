@@ -122,8 +122,8 @@ const ConfirmDealByPassword = () => {
               // console.log('receipt', receipt);
               setModalOpen({
                 isOpen: true,
-                onPressText: 'STORE로 가기',
-                onCancelText: '닫기',
+                onPressText: 'go to store',
+                onCancelText: 'close',
                 onPress: () => {
                   // @ts-ignore
                   navigation.navigate('StoreStackNav');
@@ -133,9 +133,8 @@ const ConfirmDealByPassword = () => {
                   <>
                     <Text
                       style={{
-                        fontSize: 12,
-                        paddingTop: 30,
-                        paddingBottom: 40,
+                        fontSize: 20,
+                        fontWeight: '700',
                         color: theme.color.black,
                       }}>
                       {receipt.transactionHash}
@@ -161,7 +160,7 @@ const ConfirmDealByPassword = () => {
 
       setModalOpen({
         isOpen: true,
-        onCancelText: '취소',
+        onCancelText: 'cancel',
         children: (
           <>
             <Text
@@ -170,7 +169,7 @@ const ConfirmDealByPassword = () => {
                 fontWeight: '700',
                 color: theme.color.black,
               }}>
-              Transfer 중...
+              Transfer...
             </Text>
             <InfiniteTrain />
           </>
@@ -182,7 +181,7 @@ const ConfirmDealByPassword = () => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <Text style={styles.title}>비밀번호를 입력하세요</Text>
+        <Text style={styles.title}>put password</Text>
 
         <View style={styles.markWrapper}>
           {passwords.map((password, i) => (

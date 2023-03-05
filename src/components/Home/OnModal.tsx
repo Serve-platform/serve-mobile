@@ -36,10 +36,10 @@ const OnModal = ({ onModalData, modalVisible }: OffModalProps) => {
               Nick Name
             </Text>
             <Text style={{ fontWeight: '600', fontSize: 14 }}>
-              의 양보 요청 수락
+              accept concession request
             </Text>
             <Text style={{ fontWeight: '600', fontSize: 14, top: 30 }}>
-              ~~의 좌석으로 이동하세요
+              Move to the seat of
             </Text>
           </View>
           <View style={{ position: 'absolute', bottom: 250 }}>
@@ -65,10 +65,10 @@ const OnModal = ({ onModalData, modalVisible }: OffModalProps) => {
               borderColor: 'black',
             }}
             onPress={() => onModalData()}>
-            <Text style={{ fontSize: 18 }}>거래하기</Text>
+            <Text style={{ fontSize: 18 }}>confirm</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ top: 120 }} onPress={() => {}}>
-            <Text>거절</Text>
+            <Text>decline</Text>
           </TouchableOpacity>
         </View>
       </Modal>

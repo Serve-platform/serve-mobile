@@ -24,7 +24,7 @@ const TransferModal = ({ navigation }: TransferModalProps) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Text>~를 전송합니다</Text>
+        <Text>sending</Text>
         <TouchableOpacity
           style={{
             backgroundColor: '#EFFF37',

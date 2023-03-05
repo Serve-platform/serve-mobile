@@ -35,7 +35,9 @@ const OffModal = ({ offModalData, modalVisible }: OffModalProps) => {
               }}>
               Nick Name
             </Text>
-            <Text style={{ fontWeight: '600', fontSize: 14 }}>의 양보요청</Text>
+            <Text style={{ fontWeight: '600', fontSize: 14 }}>
+              a request for concession
+            </Text>
           </View>
           <View style={{ position: 'absolute', bottom: 250 }}>
             <Image
@@ -59,10 +61,10 @@ const OffModal = ({ offModalData, modalVisible }: OffModalProps) => {
               borderColor: 'black',
             }}
             onPress={() => offModalData()}>
-            <Text style={{ fontSize: 18 }}>수락하기</Text>
+            <Text style={{ fontSize: 18 }}>confirm</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{ top: 120 }} onPress={() => {}}>
-            <Text>거절</Text>
+            <Text>decline</Text>
           </TouchableOpacity>
         </View>
       </Modal>

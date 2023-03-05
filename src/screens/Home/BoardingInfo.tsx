@@ -31,11 +31,11 @@ const BoardingInfo = () => {
   return (
     <KeyboardAwareScrollView style={styles.container}>
       <Text style={styles.title}>
-        {'탑승 중인 지하철 정보를\n정확히 입력해주세요'}
+        {'Please enter the \nsubway information exactly.'}
       </Text>
 
       <View style={styles.infoContainer}>
-        <Label title={`탑승 지하철 및 호선`} isValidate={true} />
+        <Label title={`On-board subway and line`} isValidate={true} />
         <View style={styles.wrapper}>
           <Input
             value={boardInfo.trainLocation}
@@ -57,7 +57,11 @@ const BoardingInfo = () => {
           />
         </View>
 
-        <Label title={`열차고유번호`} isValidate={true} hasDescription={true} />
+        <Label
+          title={`Train unique number`}
+          isValidate={true}
+          hasDescription={true}
+        />
         <View style={styles.wrapper}>
           <Input
             keyboardType={'number-pad'}
@@ -68,7 +72,7 @@ const BoardingInfo = () => {
           />
         </View>
 
-        <Label title={`출입문 번호`} />
+        <Label title={`Door number`} />
         <View style={styles.wrapper}>
           <Input
             keyboardType={'number-pad'}
@@ -82,7 +86,7 @@ const BoardingInfo = () => {
           <Button
             disabled={boardInfo.doorNumber === '' || boardInfo.trainUuid === ''}
             onPress={() => navigation.navigate('SelectSeatInfo')}
-            title={`다음으로`}
+            title={`next`}
           />
         </View>
       </View>

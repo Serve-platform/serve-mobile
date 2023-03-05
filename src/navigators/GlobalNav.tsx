@@ -121,7 +121,7 @@ const GlobalNav = () => {
         <Stack.Screen
           name="BoardingInfo"
           options={{
-            headerTitle: '탑승정보 입력',
+            headerTitle: 'Enter boarding information',
             headerLeft: () => (
               <TouchableOpacity
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
@@ -142,7 +142,7 @@ const GlobalNav = () => {
         <Stack.Screen
           name="SelectSeatInfo"
           options={{
-            headerTitle: '탑승정보 입력',
+            headerTitle: 'Enter boarding information',
             headerLeft: () => (
               <TouchableOpacity
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
@@ -187,7 +187,7 @@ const GlobalNav = () => {
         <Stack.Screen
           name="ConfirmDeal"
           options={{
-            headerTitle: '거래하기',
+            headerTitle: 'confirm',
             headerLeft: () => (
               <TouchableOpacity
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
@@ -210,7 +210,7 @@ const GlobalNav = () => {
         <Stack.Screen
           name="ConfirmDealByPassword"
           options={{
-            headerTitle: '거래하기',
+            headerTitle: 'configm',
             headerLeft: () => (
               <TouchableOpacity
                 hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}

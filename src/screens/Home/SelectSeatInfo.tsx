@@ -113,7 +113,9 @@ const SelectSeatInfo = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>좌석 정보을 정확히 선택해주세요</Text>
+      <Text style={styles.title}>
+        Please select your seat information correctly
+      </Text>
 
       <PinchGestureHandler
         onGestureEvent={onZoomEvent}
@@ -157,7 +159,7 @@ const SelectSeatInfo = () => {
               style={{ marginBottom: 8, width: 21, height: 30 }}
             />
             <Text style={{ fontSize: 18, color: theme.color.white }}>
-              열차 진행방향
+              Train direction
             </Text>
           </View>
           <View>
@@ -197,8 +199,8 @@ const SelectSeatInfo = () => {
         onPress={() =>
           setModalOpen({
             isOpen: true,
-            onPressText: '네 맞습니다.',
-            onCancelText: '다시 입력',
+            onPressText: 'Yes.',
+            onCancelText: 'Insert again',
             onPress: () => {
               seatButtonLeftState.forEach(e => {
                 if (e.isClick) {
@@ -234,7 +236,7 @@ const SelectSeatInfo = () => {
                     fontWeight: '700',
                     color: theme.color.black,
                   }}>
-                  탑승정보를 확인해주세요
+                  Check Boarding Info
                 </Text>
                 <Text
                   style={{
@@ -244,7 +246,7 @@ const SelectSeatInfo = () => {
                     lineHeight: 21,
                     marginVertical: 25,
                   }}>
-                  {`${boardInfo.trainLocation}지하철 ${boardInfo.trainLine}호선\n${boardInfo.trainUuid} 열차 ${boardInfo.doorNumber} 출입문 근처`}
+                  {`${boardInfo.trainLocation}Train ${boardInfo.trainLine}line\n${boardInfo.trainUuid} platform near no.${boardInfo.doorNumber}`}
                 </Text>
                 <SeatSelector seatId={seatId ?? 0} />
               </>
@@ -255,7 +257,7 @@ const SelectSeatInfo = () => {
           seatButtonLeftState.every(e => !e.isClick) &&
           seatButtonRightState.every(e => !e.isClick)
         }
-        title={'선택완료'}
+        title={'complete'}
       />
     </View>
   );

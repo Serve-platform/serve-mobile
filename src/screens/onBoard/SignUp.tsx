@@ -75,36 +75,6 @@ const SignUp = ({ navigation }: SignUpProps) => {
       />
 
       <View style={{ width: '100%' }}>
-        {/*<TouchableOpacity*/}
-        {/*  style={{*/}
-        {/*    paddingVertical: 16,*/}
-        {/*    borderRadius: 5,*/}
-        {/*    alignItems: 'center',*/}
-        {/*    justifyContent: 'center',*/}
-        {/*    backgroundColor: '#FEE500',*/}
-        {/*    display: 'flex',*/}
-        {/*    flexDirection: 'row',*/}
-        {/*  }}*/}
-        {/*  onPress={() => {}}>*/}
-        {/*  <Image*/}
-        {/*    resizeMode="contain"*/}
-        {/*    source={kakao}*/}
-        {/*    style={{*/}
-        {/*      marginRight: 15,*/}
-        {/*      width: 20,*/}
-        {/*      height: 19,*/}
-        {/*    }}*/}
-        {/*  />*/}
-        {/*  <Text*/}
-        {/*    style={{*/}
-        {/*      color: theme.color.black,*/}
-        {/*      fontSize: 17,*/}
-        {/*      fontWeight: '500',*/}
-        {/*    }}>*/}
-        {/*    카카오톡으로 시작하기*/}
-        {/*  </Text>*/}
-        {/*</TouchableOpacity>*/}
-
         <TouchableOpacity
           style={{
             marginTop: 10,
@@ -124,7 +94,7 @@ const SignUp = ({ navigation }: SignUpProps) => {
               fontSize: 17,
               fontWeight: '500',
             }}>
-            사용자1(김도현)
+            User1
           </Text>
         </TouchableOpacity>
 
@@ -147,41 +117,9 @@ const SignUp = ({ navigation }: SignUpProps) => {
               fontSize: 17,
               fontWeight: '500',
             }}>
-            사용자2(아이유)
+            User2
           </Text>
         </TouchableOpacity>
-
-        {/*<TouchableOpacity
-          style={{
-            marginTop: 10,
-            paddingVertical: 16,
-            borderRadius: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderWidth: 1,
-            borderColor: theme.color.white,
-            display: 'flex',
-            flexDirection: 'row',
-          }}
-          onPress={generateWallet}>
-          <Image
-            resizeMode="contain"
-            source={walletIcon}
-            style={{
-              marginRight: 15,
-              width: 24,
-              height: 24,
-            }}
-          />
-          <Text
-            style={{
-              color: theme.color.white,
-              fontSize: 17,
-              fontWeight: '500',
-            }}>
-            지갑 연동하기
-          </Text>
-        </TouchableOpacity>*/}
       </View>
 
       <Text style={{ color: theme.color.white }}>© Team Serve</Text>

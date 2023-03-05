@@ -125,10 +125,10 @@ const Store = ({}: StoreProps) => {
           />
         </View>
         <View style={styles.wallet}>
-          <Button title={`내 지갑 정보`} type={`white`} />
+          <Button title={`My Wallet Info`} type={`white`} />
         </View>
         <View style={styles.balance}>
-          <Text style={styles.label}>잔액</Text>
+          <Text style={styles.label}>balance</Text>
           <View>
             <Text style={styles.coins}>{balance}</Text>
             <View style={styles.highlight} />
@@ -148,14 +148,14 @@ const Store = ({}: StoreProps) => {
       {privateKey ? (
         <>
           <Button
-            title={`전환하기`}
+            title={`swap`}
             type={`yellow`}
             style={{
               marginTop: 20,
             }}
           />
           <Button
-            title={`지갑등록`}
+            title={`register the wallet`}
             type={`white`}
             style={{
               marginTop: 10,
@@ -164,7 +164,7 @@ const Store = ({}: StoreProps) => {
         </>
       ) : (
         <Button
-          title={`지갑생성`}
+          title={`create new wallet`}
           type={`white`}
           style={{
             marginTop: 10,

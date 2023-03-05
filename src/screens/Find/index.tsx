@@ -48,8 +48,8 @@ const Index = ({}: FindProps) => {
   const openRequestModal = (item: UserProp) => {
     setModalOpen({
       isOpen: true,
-      onPressText: '요청하기',
-      onCancelText: '닫기',
+      onPressText: 'request',
+      onCancelText: 'close',
       onPress: () => request(item),
       children: (
         <>
@@ -94,9 +94,17 @@ const Index = ({}: FindProps) => {
 
     setModalOpen({
       isOpen: true,
-      onCancelText: '취소',
+      onCancelText: 'cancel',
       children: (
         <>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: '700',
+              color: theme.color.black,
+            }}>
+            Requesting concessions from
+          </Text>
           <Text
             style={{
               fontSize: 20,
@@ -104,14 +112,6 @@ const Index = ({}: FindProps) => {
               color: theme.color.black,
             }}>
             {item.nickName}
-          </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: '700',
-              color: theme.color.black,
-            }}>
-            에게 양보 요청 중
           </Text>
           <InfiniteTrain />
         </>
@@ -133,8 +133,8 @@ const Index = ({}: FindProps) => {
           setIsAcceptDeal(false);
           setModalOpen({
             isOpen: true,
-            onPressText: '거래하기',
-            onCancelText: '거절',
+            onPressText: 'confirm',
+            onCancelText: 'decline',
             onPress: moveQrScan,
             children: (
               <>
@@ -152,7 +152,7 @@ const Index = ({}: FindProps) => {
                     fontWeight: '700',
                     color: theme.color.black,
                   }}>
-                  의 양보 요청 수락
+                  accept concession request
                 </Text>
                 <TextLoopTicker
                   style={{
@@ -168,7 +168,7 @@ const Index = ({}: FindProps) => {
                     fontSize: 14,
                     color: theme.color.black,
                   }}>
-                  {data.owner.nickName}의 좌석으로 이동하세요
+                  move to {data.owner.nickName}'s seat
                 </Text>
               </>
             ),
@@ -200,7 +200,7 @@ const Index = ({}: FindProps) => {
               </View>
               {item.ownerSeat.length > 0 && (
                 <Button
-                  title={`좌석보기 >`}
+                  title={`check seat >`}
                   type={`small`}
                   style={{ right: 0 }}
                   onPress={() => openRequestModal(item)}
